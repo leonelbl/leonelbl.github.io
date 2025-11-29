@@ -1,0 +1,70 @@
+---
+layout: default
+---
+<div class="home">
+  {%- if page.title -%}
+    <h1 class="page-heading">{{ page.title }}</h1>
+  {%- endif -%}
+  {{ content }}
+  
+  {%- if site.posts.size > 0 -%}
+    <h2 class="post-list-heading">
+      {% if site.active_lang == 'es' %}
+        Publicaciones
+      {% else %}
+        Posts
+      {% endif %}
+    </h2>
+    <ul class="post-list">
+      {%- assign posts_in_lang = 0 -%}
+      {%- for post in site.posts -%}
+        {%- if post.lang == site.active_lang -%}
+          {%- assign posts_in_lang = posts_in_lang | plus: 1 -%}
+          <li>
+            <span class="post-meta">
+              {% if site.active_lang == 'es' %}
+                {{ post.date | date: "%-d de %B de %Y" }}
+              {% else %}
+                {{ post.date | date: "%B %-d, %Y" }}
+              {% endif %}
+            </span>
+            <h3>
+              <a class="post-link" href="{{ post.url | relative_url }}">
+                {{ post.title | escape }}
+              </a>
+            </h3>
+            {%- if post.categories.size > 0 -%}
+              <span class="post-categories">
+                {% for category in post.categories %}
+                  <span class="category">{{ category }}</span>
+                {% endfor %}
+              </span>
+            {%- endif -%}
+            {%- if site.show_excerpts -%}
+              {{ post.excerpt }}
+            {%- endif -%}
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+    
+    {%- if posts_in_lang == 0 -%}
+      <p style="text-align: center; color: #666; padding: 20px;">
+        {% if site.active_lang == 'es' %}
+          No hay publicaciones en español aún.
+        {% else %}
+          No posts in English yet.
+        {% endif %}
+      </p>
+    {%- endif -%}
+    
+  {%- else -%}
+    <p style="text-align: center; color: #666; padding: 20px;">
+      {% if site.active_lang == 'es' %}
+        No hay publicaciones aún.
+      {% else %}
+        No posts yet.
+      {% endif %}
+    </p>
+  {%- endif -%}
+</div>

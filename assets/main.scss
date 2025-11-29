@@ -1,0 +1,604 @@
+---
+---
+
+@import "minima";
+
+// ============================================
+// PALETA DE COLORES - TEMA OSCURO
+// ============================================
+
+$color-accent: #E68405;        // Naranja Vibrante - Enlaces, CTAs
+$color-background: #1A1A1A;    // Negro Suave - Fondo principal
+$color-surface: #2A2A2A;       // Gris Oscuro - Tarjetas y elevaciones
+$color-text-primary: #E8E8E8;  // Blanco Suave - Texto principal
+$color-primary: #0A3861;       // Azul Oscuro Naval - Acentos
+$color-primary-light: #1565A8; // Azul más claro para contraste
+$color-text-secondary: #A0A0A0; // Gris Claro - Metadatos
+$color-border: #404040;        // Gris Medio - Bordes y divisores
+
+// ============================================
+// ESTILOS GLOBALES
+// ============================================
+
+body {
+  background-color: $color-background;
+  color: $color-text-primary;
+}
+
+// ============================================
+// HEADER (Encabezado)
+// ============================================
+
+.site-header {
+  background-color: $color-surface;
+  border-top: none;
+  border-bottom: 2px solid $color-accent;
+  
+  .site-title {
+    color: $color-text-primary !important;
+    font-weight: 600;
+    
+    &:hover {
+      color: $color-accent !important;
+      text-decoration: none;
+    }
+  }
+  
+  .site-nav {
+    background-color: $color-surface;
+    border: 1px solid $color-border;
+    
+    .page-link {
+      color: $color-text-primary;
+      
+      &:hover {
+        color: $color-accent;
+        text-decoration: none;
+      }
+    }
+    
+    // Menu hamburguesa en móvil
+    .menu-icon > svg path {
+      fill: $color-text-primary;
+    }
+    
+    .trigger {
+      background-color: $color-surface;
+    }
+  }
+}
+
+// ============================================
+// SELECTOR DE IDIOMA
+// ============================================
+
+.language-selector {
+  a {
+    color: $color-text-primary;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: rgba(230, 132, 5, 0.2);
+      color: $color-accent;
+    }
+  }
+  
+  strong {
+    color: $color-accent;
+    padding: 5px 10px;
+  }
+}
+
+// ============================================
+// ENLACES
+// ============================================
+
+a {
+  color: $color-primary-light;
+  text-decoration: none;
+  
+  &:hover {
+    color: $color-accent;
+    text-decoration: underline;
+  }
+  
+  &:visited {
+    color: darken($color-primary-light, 5%);
+  }
+}
+
+// ============================================
+// TÍTULOS
+// ============================================
+
+h1, h2, h3, h4, h5, h6 {
+  color: $color-text-primary;
+  font-weight: 600;
+}
+
+.post-title {
+  color: $color-text-primary;
+  
+  &:hover {
+    color: $color-accent;
+  }
+}
+
+.page-heading {
+  color: $color-text-primary;
+}
+
+// ============================================
+// LISTA DE POSTS
+// ============================================
+
+.post-list {
+  li {
+    border-bottom: 1px solid $color-border;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+    background-color: $color-surface;
+    padding: 20px;
+    border-radius: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(230, 132, 5, 0.2);
+    }
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  
+  .post-meta {
+    color: $color-text-secondary;
+    font-size: 14px;
+  }
+  
+  .post-link {
+    color: $color-text-primary;
+    font-size: 24px;
+    font-weight: 600;
+    
+    &:hover {
+      color: $color-accent;
+      text-decoration: none;
+    }
+  }
+  
+  .post-categories {
+    display: block;
+    margin-top: 8px;
+    
+    .category {
+      display: inline-block;
+      background-color: rgba(21, 101, 168, 0.3);
+      color: $color-primary-light;
+      border: 1px solid $color-primary-light;
+      padding: 3px 10px;
+      border-radius: 3px;
+      font-size: 12px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+  }
+}
+
+.post-list-heading {
+  color: $color-text-primary;
+  border-bottom: 2px solid $color-accent;
+  padding-bottom: 10px;
+}
+
+// ============================================
+// PÁGINA DE POST
+// ============================================
+
+.post-header {
+  border-bottom: 2px solid $color-accent;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.post-content {
+  h2 {
+    border-left: 4px solid $color-accent;
+    padding-left: 15px;
+    margin-top: 40px;
+    color: $color-text-primary;
+  }
+  
+  h3 {
+    color: $color-text-primary;
+    margin-top: 30px;
+  }
+  
+  h4, h5, h6 {
+    color: $color-text-primary;
+  }
+  
+  // Bloques de código - One Dark Pro Theme
+  pre, code {
+    background-color: #1d1f20;
+    border: 1px solid $color-border;
+    border-radius: 4px;
+    font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+  }
+  
+  code {
+    padding: 2px 6px;
+    color: #e06c75; // Rosa (variables, clases)
+    font-size: 0.9em;
+  }
+  
+  pre {
+    padding: 15px;
+    overflow-x: auto;
+    line-height: 1.5;
+    
+    code {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      color: #abb2bf; // Texto base
+      font-size: 0.9em;
+    }
+  }
+  
+  // Syntax Highlighting - One Dark Pro
+  .highlight {
+    background-color: #1d1f20;
+    border-radius: 4px;
+    
+    // Comentarios
+    .c, .cm, .c1, .cs {
+      color: #5c6370;
+      font-style: italic;
+    }
+    
+    // Strings (cadenas de texto)
+    .s, .s1, .s2, .se, .sh, .si, .sx {
+      color: #98c379; // Verde
+    }
+    
+    // Números
+    .m, .mf, .mh, .mi, .mo, .il {
+      color: #d19a66; // Naranja claro
+    }
+    
+    // Keywords (palabras clave: if, else, function, etc)
+    .k, .kc, .kd, .kn, .kp, .kr, .kt {
+      color: #c678dd; // Púrpura
+    }
+    
+    // Nombres de funciones
+    .nf, .fm {
+      color: #61afef; // Azul
+    }
+    
+    // Variables y nombres
+    .n, .na, .nb, .nc, .no, .nd, .ni, .ne, .nl, .nn, .nx, .py {
+      color: #e06c75; // Rosa
+    }
+    
+    // Operadores
+    .o, .ow {
+      color: #56b6c2; // Cyan
+    }
+    
+    // Clases
+    .nc {
+      color: #e5c07b; // Amarillo
+    }
+    
+    // Constantes y booleanos
+    .kc, .bp {
+      color: #d19a66; // Naranja
+    }
+    
+    // Símbolos y puntuación
+    .p {
+      color: #abb2bf; // Gris claro
+    }
+    
+    // Etiquetas HTML
+    .nt {
+      color: #e06c75; // Rosa
+    }
+    
+    // Atributos HTML
+    .na {
+      color: #d19a66; // Naranja
+    }
+    
+    // Regex
+    .sr {
+      color: #56b6c2; // Cyan
+    }
+    
+    // Bash: comandos
+    .nb {
+      color: #61afef; // Azul
+    }
+    
+    // Bash: variables
+    .nv, .vc, .vg, .vi {
+      color: #e06c75; // Rosa
+    }
+    
+    // Bash: flags/opciones
+    .o {
+      color: #d19a66; // Naranja
+    }
+  }
+  
+  // Citas (blockquote)
+  blockquote {
+    border-left: 4px solid $color-accent;
+    background-color: $color-surface;
+    padding: 15px 20px;
+    margin: 20px 0;
+    color: $color-text-secondary;
+    font-style: italic;
+  }
+  
+  // Listas
+  ul, ol {
+    li {
+      margin-bottom: 8px;
+      
+      &::marker {
+        color: $color-accent;
+      }
+    }
+  }
+  
+  // Tablas
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0;
+    background-color: $color-surface;
+    
+    th {
+      background-color: $color-primary-light;
+      color: $color-text-primary;
+      padding: 10px;
+      text-align: left;
+      border: 1px solid $color-border;
+    }
+    
+    td {
+      border: 1px solid $color-border;
+      padding: 10px;
+      color: $color-text-primary;
+    }
+    
+    tr:nth-child(even) {
+      background-color: lighten($color-surface, 5%);
+    }
+  }
+  
+  // Imágenes
+  img {
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    max-width: 100%;
+    height: auto;
+    border: 1px solid $color-border;
+  }
+  
+  // Líneas horizontales
+  hr {
+    border: none;
+    border-top: 2px solid $color-border;
+    margin: 30px 0;
+  }
+  
+  // Texto strong y em
+  strong {
+    color: $color-accent;
+  }
+}
+
+// ============================================
+// FOOTER (Pie de página)
+// ============================================
+
+.site-footer {
+  background-color: $color-surface;
+  color: $color-text-primary;
+  border-top: 2px solid $color-accent;
+  
+  .footer-heading {
+    color: $color-text-primary;
+  }
+  
+  a {
+    color: $color-text-secondary;
+    
+    &:hover {
+      color: $color-accent;
+    }
+  }
+  
+  .contact-list,
+  .social-media-list {
+    a {
+      color: $color-text-secondary;
+      
+      &:hover {
+        color: $color-accent;
+      }
+    }
+  }
+  
+  p {
+    color: $color-text-secondary;
+  }
+}
+
+// ============================================
+// BOTONES Y CTAs
+// ============================================
+
+.btn, button, input[type="submit"] {
+  background-color: $color-accent;
+  color: $color-background;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: lighten($color-accent, 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(230, 132, 5, 0.4);
+  }
+}
+
+// ============================================
+// WRAPPER
+// ============================================
+
+.wrapper {
+  max-width: calc(800px - (30px * 2));
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 30px;
+  padding-left: 30px;
+}
+
+.page-content {
+  padding: 30px 0;
+  flex: 1;
+}
+
+// ============================================
+// PÁGINA 404
+// ============================================
+
+.page-content {
+  .not-found {
+    text-align: center;
+    padding: 60px 20px;
+    
+    h1 {
+      font-size: 72px;
+      color: $color-accent;
+      margin-bottom: 20px;
+    }
+    
+    p {
+      color: $color-text-secondary;
+      font-size: 18px;
+    }
+  }
+}
+
+// ============================================
+// SCROLLBAR (Chrome, Safari, Edge)
+// ============================================
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: $color-background;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $color-border;
+  border-radius: 6px;
+  
+  &:hover {
+    background: $color-accent;
+  }
+}
+
+// ============================================
+// SELECCIÓN DE TEXTO
+// ============================================
+
+::selection {
+  background-color: $color-accent;
+  color: $color-background;
+}
+
+::-moz-selection {
+  background-color: $color-accent;
+  color: $color-background;
+}
+
+// ============================================
+// HOME PAGE
+// ============================================
+
+.home {
+  .home-intro {
+    text-align: center;
+    padding: 40px 0;
+    border-bottom: 2px solid $color-border;
+    margin-bottom: 40px;
+    
+    h1 {
+      color: $color-text-primary;
+      font-size: 2.5em;
+      margin-bottom: 15px;
+    }
+    
+    p {
+      color: $color-text-secondary;
+      font-size: 1.2em;
+    }
+  }
+}
+
+// ============================================
+// RESPONSIVE
+// ============================================
+
+@media screen and (max-width: 600px) {
+  .site-header {
+    .site-title {
+      font-size: 20px;
+    }
+  }
+  
+  .post-list {
+    li {
+      padding: 15px;
+    }
+    
+    .post-link {
+      font-size: 20px;
+    }
+  }
+  
+  .language-selector {
+    margin-top: 10px !important;
+    float: none !important;
+  }
+  
+  .home {
+    .home-intro {
+      padding: 20px 0;
+      
+      h1 {
+        font-size: 1.8em;
+      }
+      
+      p {
+        font-size: 1em;
+      }
+    }
+  }
+}

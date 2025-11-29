@@ -1,0 +1,42 @@
+title: WPGGDEV
+description: >
+  Blog personal de desarrollo y herramientas. Tutoriales sobre Linux,
+  contenedores, DevOps y configuraciones útiles para desarrolladores.
+baseurl: ""
+url: "https://leonelbl.github.io"
+github_username: leonelbl
+author: Leonel Hernández
+
+# poliglot settings
+languages: ["es", "en"]
+default_lang: "es"
+exclude_from_localization: ["javascript", "images", "css", "assets", "404.html", "feed.xml"]
+parallel_localization: true
+
+# Traducciones específicas por idioma
+lang_titles:
+  es: Mi Blog de Herramientas
+  en: My Tools Blog
+
+lang_descriptions:
+  es: Notas y herramientas útiles para el día a día
+  en: Useful notes and tools for everyday use
+
+plugins:
+  - jekyll-polyglot
+  - jekyll-feed
+  - jekyll-seo-tag
+
+sass:
+  style: compressed
+
+# Syntax Highlighting
+highlighter: rouge
+
+markdown: kramdown
+kramdown:
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: 'highlight'
+
+theme: minima

@@ -1,0 +1,39 @@
+<!-- _includes/language_selector.html -->
+<div class="language-selector" style="text-align: right; padding: 10px;">
+  🌐 
+  {% if site.active_lang == 'es' %}
+    <strong>ES</strong> | <a href="/en{{ page.url }}">EN</a>
+  {% else %}
+    <a href="#" id="switch-to-spanish">ES</a> | <strong>EN</strong>
+  {% endif %}
+</div>
+
+{% if site.active_lang == 'en' %}
+<script>
+  document.getElementById('switch-to-spanish').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    // Obtener URL actual
+    let currentPath = window.location.pathname;
+    console.log('URL actual:', currentPath);
+    
+    // Remover /en/ o /en del path
+    let spanishPath = currentPath.replace(/^\/en\//, '/').replace(/^\/en$/, '/');
+    console.log('URL español:', spanishPath);
+    
+    // Redirigir
+    window.location.href = spanishPath;
+  });
+</script>
+<style>
+  .language-selector a {
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  .language-selector a:hover {
+    background-color: #f0f0f0;
+  }
+</style>
+{% endif %}

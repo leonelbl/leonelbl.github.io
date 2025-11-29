@@ -1,0 +1,14 @@
+global:
+  title: Mi Blog de Herramientas
+  description: Notas y herramientas útiles para el día a día
+  
+navigation:
+  home: Inicio
+  about: Acerca de
+  posts: Publicaciones
+  
+home:
+  welcome: Bienvenido a mi blog
+  subtitle: Herramientas y configuraciones útiles
+  latest_posts: Últimas publicaciones
+  read_more: Leer más
