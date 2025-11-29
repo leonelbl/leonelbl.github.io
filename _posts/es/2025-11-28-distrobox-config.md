@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Guía Completa de Configuración de Distrobox"
-date: 2024-11-28
+date: 2025-11-28
 categories: [linux, config, distrobox]
 tags: [config, linux, distrobox, containers, podman, docker]
 lang: es
