@@ -19,8 +19,8 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2.3' # Use a version compatible with your local jekyll
-          bundler-cache: true # Install dependencies with Bundler
+          ruby-version: '3.2.3'
+          bundler-cache: true
 
       - name: Install and Build Jekyll Site
         run: |
