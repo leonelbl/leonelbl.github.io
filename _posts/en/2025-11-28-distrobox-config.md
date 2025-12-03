@@ -19,7 +19,12 @@ Distrobox allows you to create and manage containers of different Linux distribu
 
 Before starting, make sure you have installed:
 - **Podman** or **Docker**
-- **Distrobox** (installation: `curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sudo sh`)
+- **Distrobox**
+
+installation (Distrobox): 
+```bash 
+curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sudo sh 
+```
 
 ---
 
