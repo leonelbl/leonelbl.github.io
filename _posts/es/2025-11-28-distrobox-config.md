@@ -169,7 +169,10 @@ ZSH=$HOME/.oh-my-zsh-distrobox CHSH=no RUNZSH=no sh install_omz.sh
 
 Edita (o crea) el archivo de configuración en tu Distrobox:
 
-**Ruta:** `/home/<tu_usuario>/distrobox/development/.zshrc`
+**Ruta:** 
+```bash
+  /home/<tu_usuario>/distrobox/development/.zshrc
+```
 
 Añade estas líneas:
 
