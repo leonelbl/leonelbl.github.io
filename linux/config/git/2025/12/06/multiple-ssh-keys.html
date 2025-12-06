@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>Cómo Configurar Múltiples Llaves SSH de Git y Conectarlas con GitHub | Mi Blog de Herramientas</title>
+  
+  <meta name="description" content="Notas y herramientas útiles para el día a día">
+  
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://leonelbl.github.io/linux/config/git/2025/12/06/multiple-ssh-keys.html">
+</head><body><header class="site-header" role="banner">
+  <div class="wrapper"><a class="site-title" rel="author" href="/">
+      Mi Blog de Herramientas
+    </a>
+
+    <div style="float: right; margin-top: 14px;"><!-- _includes/language_selector.html -->
+<div class="language-selector" style="text-align: right; padding: 10px;">
+  🌐 
+  
+    <strong>ES</strong> | <a href="/en/linux/config/git/2025/12/06/multiple-ssh-keys.html">EN</a>
+  
+</div>
+
+</div><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Cómo Configurar Múltiples Llaves SSH de Git y Conectarlas con GitHub</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2025-12-06T00:00:00+00:00" itemprop="datePublished">Dec 6, 2025
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="cómo-configurar-múltiples-llaves-ssh-de-git-y-conectarlas-con-github">Cómo Configurar Múltiples Llaves SSH de Git y Conectarlas con GitHub</h1>
+
+<h2 id="introducción">Introducción</h2>
+
+<p>Si trabajas en proyectos personales y profesionales en la misma computadora, probablemente te has enfrentado al desafío de manejar múltiples cuentas de GitHub o diferentes llaves SSH para distintos contextos. La buena noticia es que existe una solución elegante y sencilla: configurar múltiples llaves SSH usando un archivo <code class="language-plaintext highlighter-rouge">config</code>.</p>
+
+<p>En este artículo te mostraré cómo configurar y gestionar varias llaves SSH en tu sistema, permitiéndote trabajar sin conflictos entre tus proyectos personales y laborales.</p>
+
+<h2 id="por-qué-necesitas-múltiples-llaves-ssh">¿Por qué necesitas múltiples llaves SSH?</h2>
+
+<p>Existen varias razones por las que podrías necesitar configurar múltiples llaves SSH:</p>
+
+<ul>
+  <li><strong>Separación de contextos</strong>: Mantener separados tus proyectos personales de los laborales es una buena práctica de organización y seguridad.</li>
+  <li><strong>Múltiples cuentas de GitHub</strong>: Si tienes una cuenta personal y otra del trabajo, necesitarás llaves diferentes para cada una.</li>
+  <li><strong>Seguridad mejorada</strong>: Si una llave se ve comprometida, solo afecta a un contexto específico, no a todos tus proyectos.</li>
+  <li><strong>Políticas empresariales</strong>: Muchas empresas requieren el uso de llaves SSH específicas para acceder a sus repositorios.</li>
+</ul>
+
+<h2 id="requisitos-previos">Requisitos previos</h2>
+
+<p>Antes de comenzar, asegúrate de tener:</p>
+
+<ul>
+  <li>Git instalado en tu sistema</li>
+  <li>Acceso a la terminal o línea de comandos</li>
+  <li>Al menos dos pares de llaves SSH (pública y privada) ya generadas</li>
+  <li>Cuentas de GitHub configuradas</li>
+</ul>
+
+<p>Si aún no has generado tus llaves SSH, puedes hacerlo con el siguiente comando:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen <span class="nt">-t</span> ed25519 <span class="nt">-C</span> <span class="s2">"tu_email@ejemplo.com"</span> <span class="nt">-f</span> ~/.ssh/id_personal
+</code></pre></div></div>
+
+<p>Repite el proceso para crear tu llave del trabajo:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen <span class="nt">-t</span> ed25519 <span class="nt">-C</span> <span class="s2">"tu_email@trabajo.com"</span> <span class="nt">-f</span> ~/.ssh/id_trabajo
+</code></pre></div></div>
+
+<h2 id="configuración-paso-a-paso">Configuración paso a paso</h2>
+
+<h3 id="paso-1-crear-el-archivo-config">Paso 1: Crear el archivo config</h3>
+
+<p>Primero, necesitas crear un archivo de configuración en tu directorio <code class="language-plaintext highlighter-rouge">.ssh</code>. Este archivo le dirá a SSH qué llave usar para cada conexión.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">touch</span> ~/.ssh/config
+</code></pre></div></div>
+
+<p>Si el archivo ya existe, simplemente ábrelo con tu editor favorito:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nano ~/.ssh/config
+<span class="c"># o</span>
+vim ~/.ssh/config
+<span class="c"># o</span>
+code ~/.ssh/config
+</code></pre></div></div>
+
+<h3 id="paso-2-configurar-tus-llaves-ssh">Paso 2: Configurar tus llaves SSH</h3>
+
+<p>Dentro del archivo <code class="language-plaintext highlighter-rouge">config</code>, añade las configuraciones para cada una de tus llaves. Aquí te muestro un ejemplo completo con dos configuraciones:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Configuración para proyectos personales
+Host github.com-personal
+    HostName github.com
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_personal
+
+# Configuración para proyectos del trabajo
+Host github.com-trabajo
+    HostName github.com
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_trabajo
+</code></pre></div></div>
+
+<p><strong>Explicación de cada parámetro:</strong></p>
+
+<ul>
+  <li><strong>Host</strong>: Es el alias que usarás para identificar esta conexión. Puede ser cualquier nombre que elijas.</li>
+  <li><strong>HostName</strong>: El dominio real del servidor (en este caso, github.com).</li>
+  <li><strong>AddKeysToAgent</strong>: Añade automáticamente la llave al agente SSH para que no tengas que introducir la contraseña constantemente.</li>
+  <li><strong>IdentityFile</strong>: La ruta a tu llave privada SSH.</li>
+</ul>
+
+<h3 id="paso-3-ajustar-los-permisos-del-archivo-config">Paso 3: Ajustar los permisos del archivo config</h3>
+
+<p>Por seguridad, es importante que el archivo <code class="language-plaintext highlighter-rouge">config</code> tenga los permisos correctos:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod </span>600 ~/.ssh/config
+</code></pre></div></div>
+
+<h3 id="paso-4-agregar-las-llaves-públicas-a-github">Paso 4: Agregar las llaves públicas a GitHub</h3>
+
+<p>Ahora necesitas agregar cada llave pública a su respectiva cuenta de GitHub:</p>
+
+<ol>
+  <li>Copia el contenido de tu llave pública:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> ~/.ssh/id_personal.pub
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Ve a GitHub → Settings → SSH and GPG keys → New SSH key</p>
+  </li>
+  <li>
+    <p>Pega el contenido y dale un nombre descriptivo (ej: “Mi Laptop Personal”)</p>
+  </li>
+  <li>Repite el proceso para tu llave del trabajo en la cuenta correspondiente</li>
+</ol>
+
+<h2 id="cómo-usar-tus-llaves-configuradas">Cómo usar tus llaves configuradas</h2>
+
+<h3 id="clonar-un-repositorio">Clonar un repositorio</h3>
+
+<p>Cuando clones un repositorio, simplemente reemplaza <code class="language-plaintext highlighter-rouge">github.com</code> con el alias que configuraste en tu archivo <code class="language-plaintext highlighter-rouge">config</code>:</p>
+
+<p><strong>Proyecto personal:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@github.com-personal:usuario/mi-proyecto-personal.git
+</code></pre></div></div>
+
+<p><strong>Proyecto del trabajo:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@github.com-trabajo:empresa/proyecto-trabajo.git
+</code></pre></div></div>
+
+<h3 id="cambiar-la-url-remota-de-un-repositorio-existente">Cambiar la URL remota de un repositorio existente</h3>
+
+<p>Si ya tienes repositorios clonados, puedes cambiar su URL remota para usar el alias correcto:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Ver la URL actual</span>
+git remote <span class="nt">-v</span>
+
+<span class="c"># Cambiar a la configuración personal</span>
+git remote set-url origin git@github.com-personal:usuario/mi-proyecto.git
+
+<span class="c"># O cambiar a la configuración del trabajo</span>
+git remote set-url origin git@github.com-trabajo:empresa/proyecto.git
+</code></pre></div></div>
+
+<h3 id="verificar-la-conexión">Verificar la conexión</h3>
+
+<p>Puedes verificar que tu configuración funciona correctamente con:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh <span class="nt">-T</span> git@github.com-personal
+ssh <span class="nt">-T</span> git@github.com-trabajo
+</code></pre></div></div>
+
+<p>Deberías recibir un mensaje como: “Hi usuario! You’ve successfully authenticated…”</p>
+
+<h2 id="ejemplo-completo-de-flujo-de-trabajo">Ejemplo completo de flujo de trabajo</h2>
+
+<p>Imagina que trabajas en un proyecto personal por la mañana y en uno del trabajo por la tarde:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Por la mañana - Proyecto personal</span>
+<span class="nb">cd</span> ~/proyectos/personales
+git clone git@github.com-personal:usuario/proyecto-personal.git
+<span class="nb">cd </span>mi-blog
+<span class="c"># Trabajas en tu código...</span>
+git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"Nuevo post del blog"</span>
+git push origin main
+
+<span class="c"># Por la tarde - Proyecto del trabajo</span>
+<span class="nb">cd</span> ~/proyectos/trabajo
+git clone git@github.com-trabajo:empresa/aplicacion-web.git
+<span class="nb">cd </span>aplicacion-web
+<span class="c"># Trabajas en el proyecto...</span>
+git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"Feature: nueva funcionalidad"</span>
+git push origin main
+</code></pre></div></div>
+
+<p>Todo funciona sin conflictos porque cada repositorio usa automáticamente la llave SSH correcta.</p>
+
+<h2 id="beneficios-de-esta-configuración">Beneficios de esta configuración</h2>
+
+<ol>
+  <li><strong>Organización clara</strong>: Separas claramente tus contextos de trabajo sin confusiones</li>
+  <li><strong>Sin cambios manuales</strong>: No necesitas cambiar configuraciones cada vez que cambias de proyecto</li>
+  <li><strong>Mayor seguridad</strong>: Cada contexto tiene su propia llave, reduciendo el riesgo de comprometer todos tus proyectos</li>
+  <li><strong>Cumplimiento de políticas</strong>: Facilita cumplir con políticas empresariales que requieren llaves específicas</li>
+  <li><strong>Escalabilidad</strong>: Puedes agregar tantas configuraciones como necesites (freelance, open source, etc.)</li>
+  <li><strong>Menos errores</strong>: Evitas accidentalmente hacer push a repositorios del trabajo con tu cuenta personal o viceversa</li>
+</ol>
+
+<h2 id="consejos-adicionales">Consejos adicionales</h2>
+
+<ul>
+  <li><strong>Nombres descriptivos</strong>: Usa nombres claros en tus alias (<code class="language-plaintext highlighter-rouge">github.com-personal</code>, <code class="language-plaintext highlighter-rouge">github.com-trabajo</code>) para evitar confusiones</li>
+  <li><strong>Documentación</strong>: Mantén un registro de qué llave usas para qué propósito</li>
+  <li><strong>Respaldos</strong>: Asegúrate de hacer respaldo de tus llaves privadas de forma segura</li>
+  <li><strong>Rotación de llaves</strong>: Considera cambiar tus llaves SSH periódicamente por seguridad</li>
+  <li><strong>Variables de entorno Git</strong>: También puedes configurar diferentes nombres de usuario y correos para cada repositorio con configuraciones locales de Git</li>
+</ul>
+
+<h2 id="solución-de-problemas-comunes">Solución de problemas comunes</h2>
+
+<h3 id="permission-denied-publickey">“Permission denied (publickey)”</h3>
+
+<p>Si recibes este error, verifica:</p>
+<ul>
+  <li>Que la llave pública esté agregada a GitHub</li>
+  <li>Que estés usando el alias correcto en la URL</li>
+  <li>Que los permisos del archivo sean correctos (<code class="language-plaintext highlighter-rouge">chmod 600</code>)</li>
+</ul>
+
+<h3 id="la-llave-no-se-encuentra">La llave no se encuentra</h3>
+
+<p>Asegúrate de que la ruta en <code class="language-plaintext highlighter-rouge">IdentityFile</code> sea correcta:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> <span class="nt">-la</span> ~/.ssh/
+</code></pre></div></div>
+
+<h3 id="problemas-con-el-agente-ssh">Problemas con el agente SSH</h3>
+
+<p>Inicia el agente SSH y agrega tus llaves manualmente:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">eval</span> <span class="s2">"</span><span class="si">$(</span>ssh-agent <span class="nt">-s</span><span class="si">)</span><span class="s2">"</span>
+ssh-add ~/.ssh/id_personal
+ssh-add ~/.ssh/id_trabajo
+</code></pre></div></div>
+
+<h2 id="conclusión">Conclusión</h2>
+
+<p>Configurar múltiples llaves SSH es más sencillo de lo que parece y ofrece beneficios significativos en términos de organización, seguridad y productividad. Con un simple archivo <code class="language-plaintext highlighter-rouge">config</code>, puedes gestionar sin esfuerzo múltiples identidades y contextos de trabajo.</p>
+
+<p>Esta configuración te permitirá trabajar de manera más eficiente, evitando conflictos entre tus proyectos personales y profesionales, y manteniendo una separación clara que es beneficiosa tanto desde el punto de vista técnico como organizacional.</p>
+
+  </div><a class="u-url" href="/linux/config/git/2025/12/06/multiple-ssh-keys.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Leonel Hernández</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/leonelbl"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">leonelbl</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Notas y herramientas útiles para el día a día</p>
+      </div>
+    </div>
+  </div>
+</footer></body>
+</html>

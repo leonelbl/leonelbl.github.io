@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://leonelbl.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://leonelbl.github.io/" rel="alternate" type="text/html" /><updated>2025-12-06T12:58:21+00:00</updated><id>https://leonelbl.github.io/feed.xml</id><title type="html">WPGGDEV</title><subtitle>Blog personal de desarrollo y herramientas. Tutoriales sobre Linux, contenedores, DevOps y configuraciones útiles para desarrolladores.
+</subtitle><author><name>Leonel Hernández</name></author><entry xml:lang="es"><title type="html">Cómo Configurar Múltiples Llaves SSH de Git y Conectarlas con GitHub</title><link href="https://leonelbl.github.io/linux/config/git/2025/12/06/multiple-ssh-keys.html" rel="alternate" type="text/html" title="Cómo Configurar Múltiples Llaves SSH de Git y Conectarlas con GitHub" /><published>2025-12-06T00:00:00+00:00</published><updated>2025-12-06T00:00:00+00:00</updated><id>https://leonelbl.github.io/linux/config/git/2025/12/06/multiple-ssh-keys</id><content type="html" xml:base="https://leonelbl.github.io/linux/config/git/2025/12/06/multiple-ssh-keys.html"><![CDATA[<h1 id="cómo-configurar-múltiples-llaves-ssh-de-git-y-conectarlas-con-github">Cómo Configurar Múltiples Llaves SSH de Git y Conectarlas con GitHub</h1>
+
+<h2 id="introducción">Introducción</h2>
+
+<p>Si trabajas en proyectos personales y profesionales en la misma computadora, probablemente te has enfrentado al desafío de manejar múltiples cuentas de GitHub o diferentes llaves SSH para distintos contextos. La buena noticia es que existe una solución elegante y sencilla: configurar múltiples llaves SSH usando un archivo <code class="language-plaintext highlighter-rouge">config</code>.</p>
+
+<p>En este artículo te mostraré cómo configurar y gestionar varias llaves SSH en tu sistema, permitiéndote trabajar sin conflictos entre tus proyectos personales y laborales.</p>
+
+<h2 id="por-qué-necesitas-múltiples-llaves-ssh">¿Por qué necesitas múltiples llaves SSH?</h2>
+
+<p>Existen varias razones por las que podrías necesitar configurar múltiples llaves SSH:</p>
+
+<ul>
+  <li><strong>Separación de contextos</strong>: Mantener separados tus proyectos personales de los laborales es una buena práctica de organización y seguridad.</li>
+  <li><strong>Múltiples cuentas de GitHub</strong>: Si tienes una cuenta personal y otra del trabajo, necesitarás llaves diferentes para cada una.</li>
+  <li><strong>Seguridad mejorada</strong>: Si una llave se ve comprometida, solo afecta a un contexto específico, no a todos tus proyectos.</li>
+  <li><strong>Políticas empresariales</strong>: Muchas empresas requieren el uso de llaves SSH específicas para acceder a sus repositorios.</li>
+</ul>
+
+<h2 id="requisitos-previos">Requisitos previos</h2>
+
+<p>Antes de comenzar, asegúrate de tener:</p>
+
+<ul>
+  <li>Git instalado en tu sistema</li>
+  <li>Acceso a la terminal o línea de comandos</li>
+  <li>Al menos dos pares de llaves SSH (pública y privada) ya generadas</li>
+  <li>Cuentas de GitHub configuradas</li>
+</ul>
+
+<p>Si aún no has generado tus llaves SSH, puedes hacerlo con el siguiente comando:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen <span class="nt">-t</span> ed25519 <span class="nt">-C</span> <span class="s2">"tu_email@ejemplo.com"</span> <span class="nt">-f</span> ~/.ssh/id_personal
+</code></pre></div></div>
+
+<p>Repite el proceso para crear tu llave del trabajo:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen <span class="nt">-t</span> ed25519 <span class="nt">-C</span> <span class="s2">"tu_email@trabajo.com"</span> <span class="nt">-f</span> ~/.ssh/id_trabajo
+</code></pre></div></div>
+
+<h2 id="configuración-paso-a-paso">Configuración paso a paso</h2>
+
+<h3 id="paso-1-crear-el-archivo-config">Paso 1: Crear el archivo config</h3>
+
+<p>Primero, necesitas crear un archivo de configuración en tu directorio <code class="language-plaintext highlighter-rouge">.ssh</code>. Este archivo le dirá a SSH qué llave usar para cada conexión.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">touch</span> ~/.ssh/config
+</code></pre></div></div>
+
+<p>Si el archivo ya existe, simplemente ábrelo con tu editor favorito:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nano ~/.ssh/config
+<span class="c"># o</span>
+vim ~/.ssh/config
+<span class="c"># o</span>
+code ~/.ssh/config
+</code></pre></div></div>
+
+<h3 id="paso-2-configurar-tus-llaves-ssh">Paso 2: Configurar tus llaves SSH</h3>
+
+<p>Dentro del archivo <code class="language-plaintext highlighter-rouge">config</code>, añade las configuraciones para cada una de tus llaves. Aquí te muestro un ejemplo completo con dos configuraciones:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Configuración para proyectos personales
+Host github.com-personal
+    HostName github.com
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_personal
+
+# Configuración para proyectos del trabajo
+Host github.com-trabajo
+    HostName github.com
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_trabajo
+</code></pre></div></div>
+
+<p><strong>Explicación de cada parámetro:</strong></p>
+
+<ul>
+  <li><strong>Host</strong>: Es el alias que usarás para identificar esta conexión. Puede ser cualquier nombre que elijas.</li>
+  <li><strong>HostName</strong>: El dominio real del servidor (en este caso, github.com).</li>
+  <li><strong>AddKeysToAgent</strong>: Añade automáticamente la llave al agente SSH para que no tengas que introducir la contraseña constantemente.</li>
+  <li><strong>IdentityFile</strong>: La ruta a tu llave privada SSH.</li>
+</ul>
+
+<h3 id="paso-3-ajustar-los-permisos-del-archivo-config">Paso 3: Ajustar los permisos del archivo config</h3>
+
+<p>Por seguridad, es importante que el archivo <code class="language-plaintext highlighter-rouge">config</code> tenga los permisos correctos:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod </span>600 ~/.ssh/config
+</code></pre></div></div>
+
+<h3 id="paso-4-agregar-las-llaves-públicas-a-github">Paso 4: Agregar las llaves públicas a GitHub</h3>
+
+<p>Ahora necesitas agregar cada llave pública a su respectiva cuenta de GitHub:</p>
+
+<ol>
+  <li>Copia el contenido de tu llave pública:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> ~/.ssh/id_personal.pub
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Ve a GitHub → Settings → SSH and GPG keys → New SSH key</p>
+  </li>
+  <li>
+    <p>Pega el contenido y dale un nombre descriptivo (ej: “Mi Laptop Personal”)</p>
+  </li>
+  <li>Repite el proceso para tu llave del trabajo en la cuenta correspondiente</li>
+</ol>
+
+<h2 id="cómo-usar-tus-llaves-configuradas">Cómo usar tus llaves configuradas</h2>
+
+<h3 id="clonar-un-repositorio">Clonar un repositorio</h3>
+
+<p>Cuando clones un repositorio, simplemente reemplaza <code class="language-plaintext highlighter-rouge">github.com</code> con el alias que configuraste en tu archivo <code class="language-plaintext highlighter-rouge">config</code>:</p>
+
+<p><strong>Proyecto personal:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@github.com-personal:usuario/mi-proyecto-personal.git
+</code></pre></div></div>
+
+<p><strong>Proyecto del trabajo:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@github.com-trabajo:empresa/proyecto-trabajo.git
+</code></pre></div></div>
+
+<h3 id="cambiar-la-url-remota-de-un-repositorio-existente">Cambiar la URL remota de un repositorio existente</h3>
+
+<p>Si ya tienes repositorios clonados, puedes cambiar su URL remota para usar el alias correcto:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Ver la URL actual</span>
+git remote <span class="nt">-v</span>
+
+<span class="c"># Cambiar a la configuración personal</span>
+git remote set-url origin git@github.com-personal:usuario/mi-proyecto.git
+
+<span class="c"># O cambiar a la configuración del trabajo</span>
+git remote set-url origin git@github.com-trabajo:empresa/proyecto.git
+</code></pre></div></div>
+
+<h3 id="verificar-la-conexión">Verificar la conexión</h3>
+
+<p>Puedes verificar que tu configuración funciona correctamente con:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh <span class="nt">-T</span> git@github.com-personal
+ssh <span class="nt">-T</span> git@github.com-trabajo
+</code></pre></div></div>
+
+<p>Deberías recibir un mensaje como: “Hi usuario! You’ve successfully authenticated…”</p>
+
+<h2 id="ejemplo-completo-de-flujo-de-trabajo">Ejemplo completo de flujo de trabajo</h2>
+
+<p>Imagina que trabajas en un proyecto personal por la mañana y en uno del trabajo por la tarde:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Por la mañana - Proyecto personal</span>
+<span class="nb">cd</span> ~/proyectos/personales
+git clone git@github.com-personal:usuario/proyecto-personal.git
+<span class="nb">cd </span>mi-blog
+<span class="c"># Trabajas en tu código...</span>
+git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"Nuevo post del blog"</span>
+git push origin main
+
+<span class="c"># Por la tarde - Proyecto del trabajo</span>
+<span class="nb">cd</span> ~/proyectos/trabajo
+git clone git@github.com-trabajo:empresa/aplicacion-web.git
+<span class="nb">cd </span>aplicacion-web
+<span class="c"># Trabajas en el proyecto...</span>
+git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"Feature: nueva funcionalidad"</span>
+git push origin main
+</code></pre></div></div>
+
+<p>Todo funciona sin conflictos porque cada repositorio usa automáticamente la llave SSH correcta.</p>
+
+<h2 id="beneficios-de-esta-configuración">Beneficios de esta configuración</h2>
+
+<ol>
+  <li><strong>Organización clara</strong>: Separas claramente tus contextos de trabajo sin confusiones</li>
+  <li><strong>Sin cambios manuales</strong>: No necesitas cambiar configuraciones cada vez que cambias de proyecto</li>
+  <li><strong>Mayor seguridad</strong>: Cada contexto tiene su propia llave, reduciendo el riesgo de comprometer todos tus proyectos</li>
+  <li><strong>Cumplimiento de políticas</strong>: Facilita cumplir con políticas empresariales que requieren llaves específicas</li>
+  <li><strong>Escalabilidad</strong>: Puedes agregar tantas configuraciones como necesites (freelance, open source, etc.)</li>
+  <li><strong>Menos errores</strong>: Evitas accidentalmente hacer push a repositorios del trabajo con tu cuenta personal o viceversa</li>
+</ol>
+
+<h2 id="consejos-adicionales">Consejos adicionales</h2>
+
+<ul>
+  <li><strong>Nombres descriptivos</strong>: Usa nombres claros en tus alias (<code class="language-plaintext highlighter-rouge">github.com-personal</code>, <code class="language-plaintext highlighter-rouge">github.com-trabajo</code>) para evitar confusiones</li>
+  <li><strong>Documentación</strong>: Mantén un registro de qué llave usas para qué propósito</li>
+  <li><strong>Respaldos</strong>: Asegúrate de hacer respaldo de tus llaves privadas de forma segura</li>
+  <li><strong>Rotación de llaves</strong>: Considera cambiar tus llaves SSH periódicamente por seguridad</li>
+  <li><strong>Variables de entorno Git</strong>: También puedes configurar diferentes nombres de usuario y correos para cada repositorio con configuraciones locales de Git</li>
+</ul>
+
+<h2 id="solución-de-problemas-comunes">Solución de problemas comunes</h2>
+
+<h3 id="permission-denied-publickey">“Permission denied (publickey)”</h3>
+
+<p>Si recibes este error, verifica:</p>
+<ul>
+  <li>Que la llave pública esté agregada a GitHub</li>
+  <li>Que estés usando el alias correcto en la URL</li>
+  <li>Que los permisos del archivo sean correctos (<code class="language-plaintext highlighter-rouge">chmod 600</code>)</li>
+</ul>
+
+<h3 id="la-llave-no-se-encuentra">La llave no se encuentra</h3>
+
+<p>Asegúrate de que la ruta en <code class="language-plaintext highlighter-rouge">IdentityFile</code> sea correcta:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> <span class="nt">-la</span> ~/.ssh/
+</code></pre></div></div>
+
+<h3 id="problemas-con-el-agente-ssh">Problemas con el agente SSH</h3>
+
+<p>Inicia el agente SSH y agrega tus llaves manualmente:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">eval</span> <span class="s2">"</span><span class="si">$(</span>ssh-agent <span class="nt">-s</span><span class="si">)</span><span class="s2">"</span>
+ssh-add ~/.ssh/id_personal
+ssh-add ~/.ssh/id_trabajo
+</code></pre></div></div>
+
+<h2 id="conclusión">Conclusión</h2>
+
+<p>Configurar múltiples llaves SSH es más sencillo de lo que parece y ofrece beneficios significativos en términos de organización, seguridad y productividad. Con un simple archivo <code class="language-plaintext highlighter-rouge">config</code>, puedes gestionar sin esfuerzo múltiples identidades y contextos de trabajo.</p>
+
+<p>Esta configuración te permitirá trabajar de manera más eficiente, evitando conflictos entre tus proyectos personales y profesionales, y manteniendo una separación clara que es beneficiosa tanto desde el punto de vista técnico como organizacional.</p>]]></content><author><name>Leonel Hernández</name></author><category term="linux" /><category term="config" /><category term="git" /><category term="config" /><category term="linux" /><category term="git" /><summary type="html"><![CDATA[Cómo Configurar Múltiples Llaves SSH de Git y Conectarlas con GitHub]]></summary></entry><entry xml:lang="es"><title type="html">Guía Completa de Configuración de Distrobox</title><link href="https://leonelbl.github.io/linux/config/distrobox/2025/11/28/distrobox-config.html" rel="alternate" type="text/html" title="Guía Completa de Configuración de Distrobox" /><published>2025-11-28T00:00:00+00:00</published><updated>2025-11-28T00:00:00+00:00</updated><id>https://leonelbl.github.io/linux/config/distrobox/2025/11/28/distrobox-config</id><content type="html" xml:base="https://leonelbl.github.io/linux/config/distrobox/2025/11/28/distrobox-config.html"><![CDATA[<h1 id="guía-completa-de-configuración-de-distrobox">Guía Completa de Configuración de Distrobox</h1>
+
+<p>Distrobox es una herramienta poderosa que permite ejecutar cualquier distribución de Linux dentro de tu terminal, usando contenedores pero con acceso completo a tu sistema de archivos y hardware. Esta guía cubre desde la creación básica de contenedores hasta configuraciones avanzadas.</p>
+
+<h2 id="qué-es-distrobox">¿Qué es Distrobox?</h2>
+
+<p>Distrobox te permite crear y gestionar contenedores de diferentes distribuciones Linux sin las restricciones típicas de los contenedores tradicionales. Puedes ejecutar aplicaciones gráficas, acceder a tu directorio home, usar dispositivos USB, e incluso exportar aplicaciones al sistema anfitrión.</p>
+
+<h2 id="requisitos-previos">Requisitos Previos</h2>
+
+<p>Antes de comenzar, asegúrate de tener instalado:</p>
+<ul>
+  <li><strong>Podman</strong> o <strong>Docker</strong></li>
+  <li><strong>Distrobox</strong></li>
+</ul>
+
+<p>Instalación(Distrobox):</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> https://raw.githubusercontent.com/89luca89/distrobox/main/install | <span class="nb">sudo </span>sh 
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="creación-de-contenedores">Creación de Contenedores</h2>
+
+<h3 id="ejemplo-1-configuración-básica">Ejemplo 1: Configuración Básica</h3>
+
+<p>Esta es la forma más simple de crear un contenedor Distrobox con un directorio home personalizado.</p>
+
+<p><strong>Características:</strong></p>
+<ul>
+  <li>Nombre de imagen por defecto (genera uno automático)</li>
+  <li>Directorio home personalizado</li>
+  <li>Ideal para pruebas rápidas o entornos temporales</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Crear contenedor CentOS Stream 9 con home personalizado</span>
+distrobox create <span class="nt">--pull</span> <span class="nt">--image</span> centos:stream9 <span class="nt">--home</span> ~/distrobox/centos9
+</code></pre></div></div>
+
+<p><strong>Uso:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Entrar al contenedor</span>
+distrobox enter centos-stream-9
+</code></pre></div></div>
+
+<hr />
+
+<h3 id="ejemplo-2-configuración-personalizada">Ejemplo 2: Configuración Personalizada</h3>
+
+<p>Un paso adelante: asignar un nombre específico al contenedor facilita su gestión y lo hace más identificable.</p>
+
+<p><strong>Características:</strong></p>
+<ul>
+  <li>Nombre de contenedor personalizado</li>
+  <li>Directorio home personalizado</li>
+  <li>Mejor organización para múltiples entornos</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Crear contenedor Ubuntu 24.04 con nombre y home personalizado</span>
+distrobox create <span class="nt">--name</span> development <span class="se">\</span>
+  <span class="nt">--pull</span> <span class="se">\</span>
+  <span class="nt">--image</span> ubuntu:24.04 <span class="se">\</span>
+  <span class="nt">--home</span> ~/distrobox/development
+</code></pre></div></div>
+
+<p><strong>Uso:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Entrar usando el nombre personalizado</span>
+distrobox enter development
+</code></pre></div></div>
+
+<p><strong>Ventajas de usar nombres personalizados:</strong></p>
+<ul>
+  <li>Fácil identificación del propósito del contenedor</li>
+  <li>Comandos más cortos y memorables</li>
+  <li>Mejor gestión cuando tienes múltiples contenedores</li>
+</ul>
+
+<hr />
+
+<h3 id="ejemplo-3-acceso-a-docker-del-sistema-configuración-avanzada">Ejemplo 3: Acceso a Docker del Sistema (Configuración Avanzada)</h3>
+
+<p>Esta configuración es especialmente útil para desarrollo cuando necesitas usar Docker desde dentro de tu contenedor Distrobox sin instalar Docker Engine dentro del contenedor.</p>
+
+<p><strong>Características:</strong></p>
+<ul>
+  <li>Nombre personalizado: <code class="language-plaintext highlighter-rouge">development</code></li>
+  <li>Home personalizado: <code class="language-plaintext highlighter-rouge">~/distrobox/development</code></li>
+  <li>Socket de Docker compartido con el sistema anfitrión</li>
+  <li>Permite ejecutar comandos Docker desde el contenedor</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>distrobox create <span class="nt">--name</span> development <span class="se">\</span>
+  <span class="nt">--pull</span> <span class="se">\</span>
+  <span class="nt">--image</span> ubuntu:24.04 <span class="se">\</span>
+  <span class="nt">--home</span> ~/distrobox/development <span class="se">\</span>
+  <span class="nt">--additional-flags</span> <span class="s2">"--volume /var/run/docker.sock:/var/run/docker.sock:rw"</span>
+</code></pre></div></div>
+
+<p><strong>Configuración post-creación:</strong></p>
+
+<p>Después de crear el contenedor, necesitas añadir tu usuario al grupo docker dentro del contenedor:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Entrar al contenedor</span>
+distrobox enter development
+
+<span class="c"># Instalar Docker CLI (no el daemon, solo el cliente)</span>
+<span class="nb">sudo </span>apt update
+<span class="nb">sudo </span>apt <span class="nb">install </span>docker.io <span class="nt">-y</span>
+
+<span class="c"># Añadir tu usuario al grupo docker</span>
+<span class="nb">sudo </span>usermod <span class="nt">-aG</span> docker <span class="nv">$USER</span>
+
+<span class="c"># Salir y volver a entrar para aplicar cambios</span>
+<span class="nb">exit
+</span>distrobox enter development
+
+<span class="c"># Verificar que funciona</span>
+docker ps
+</code></pre></div></div>
+
+<p><strong>Casos de uso:</strong></p>
+<ul>
+  <li>Desarrollo de aplicaciones containerizadas</li>
+  <li>Testing de imágenes Docker</li>
+  <li>Orquestación de contenedores desde un entorno aislado</li>
+  <li>CI/CD en entornos locales</li>
+</ul>
+
+<blockquote>
+  <p><strong>⚠️ Importante:</strong> Compartir el socket de Docker es equivalente a dar acceso root al sistema. Usa esta configuración solo en entornos de desarrollo confiables.</p>
+</blockquote>
+
+<hr />
+
+<h2 id="instalación-personalizada-de-oh-my-zsh">Instalación Personalizada de Oh My Zsh</h2>
+
+<p>Instalar Oh My Zsh dentro de Distrobox requiere un enfoque especial para mantener la configuración aislada del sistema anfitrión. Esta guía te permite tener configuraciones independientes de Zsh en tu sistema principal y en cada contenedor.</p>
+
+<h3 id="por-qué-una-instalación-personalizada">¿Por qué una instalación personalizada?</h3>
+
+<p>La instalación estándar de Oh My Zsh puede causar conflictos cuando:</p>
+<ul>
+  <li>Compartes el directorio home con el sistema anfitrión</li>
+  <li>Quieres diferentes configuraciones en cada contenedor</li>
+  <li>Necesitas mantener versiones diferentes de plugins o temas</li>
+</ul>
+
+<h3 id="paso-1-descargar-el-script-de-instalación">Paso 1: Descargar el Script de Instalación</h3>
+
+<p>Primero, descarga el instalador oficial de Oh My Zsh en tu directorio home dentro del contenedor:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-fsSL</span> https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh <span class="nt">-o</span> install_omz.sh
+</code></pre></div></div>
+
+<h3 id="paso-2-instalación-con-variables-personalizadas">Paso 2: Instalación con Variables Personalizadas</h3>
+
+<p>La clave está en usar variables de entorno para cambiar la ubicación de instalación:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">ZSH</span><span class="o">=</span><span class="nv">$HOME</span>/.oh-my-zsh-distrobox <span class="nv">CHSH</span><span class="o">=</span>no <span class="nv">RUNZSH</span><span class="o">=</span>no sh install_omz.sh
+</code></pre></div></div>
+
+<p><strong>Explicación de las variables:</strong></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ZSH=$HOME/.oh-my-zsh-distrobox</code>: Define un directorio personalizado para Oh My Zsh</li>
+  <li><code class="language-plaintext highlighter-rouge">CHSH=no</code>: Evita cambiar el shell por defecto automáticamente</li>
+  <li><code class="language-plaintext highlighter-rouge">RUNZSH=no</code>: No inicia Zsh inmediatamente después de la instalación</li>
+</ul>
+
+<h3 id="paso-3-configurar-zsh">Paso 3: Configurar Zsh</h3>
+
+<p>Edita (o crea) el archivo de configuración en tu Distrobox:</p>
+
+<p><strong>Ruta:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  /home/&lt;tu_usuario&gt;/distrobox/development/.zshrc
+</code></pre></div></div>
+
+<p>Añade estas líneas:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">ZSH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.oh-my-zsh-distrobox"</span>
+<span class="nb">source</span> <span class="nv">$ZSH</span>/oh-my-zsh.sh
+</code></pre></div></div>
+
+<blockquote>
+  <p><strong>Nota:</strong> Con esta configuración, tu Zsh dentro de Distrobox:</p>
+  <ul>
+    <li>Cargará su <strong>propio</strong> <code class="language-plaintext highlighter-rouge">.zshrc</code> (en <code class="language-plaintext highlighter-rouge">/distrobox/development/.zshrc</code>)</li>
+    <li>Usará su <strong>propia</strong> instalación de Oh My Zsh (en <code class="language-plaintext highlighter-rouge">/distrobox/development/.oh-my-zsh-distrobox</code>)</li>
+  </ul>
+
+  <p>Esto mantiene la instalación completamente aislada del sistema padre, sin importar si comparten el directorio <code class="language-plaintext highlighter-rouge">/home/&lt;tu_usuario&gt;/</code> montado.</p>
+</blockquote>
+
+<p><strong>Configuración adicional (opcional):</strong></p>
+
+<p>Puedes añadir más personalización a tu <code class="language-plaintext highlighter-rouge">.zshrc</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Tema (puedes cambiarlo)</span>
+<span class="nv">ZSH_THEME</span><span class="o">=</span><span class="s2">"robbyrussell"</span>
+
+<span class="c"># Plugins recomendados para desarrollo</span>
+<span class="nv">plugins</span><span class="o">=(</span>
+  git
+  docker
+  ubuntu
+  command-not-found
+  colored-man-pages
+<span class="o">)</span>
+
+<span class="c"># Tus aliases y configuraciones personales</span>
+<span class="nb">alias </span><span class="nv">ll</span><span class="o">=</span><span class="s1">'ls -lah'</span>
+<span class="nb">alias </span><span class="nv">update</span><span class="o">=</span><span class="s1">'sudo apt update &amp;&amp; sudo apt upgrade -y'</span>
+</code></pre></div></div>
+
+<h3 id="paso-4-aplicar-cambios">Paso 4: Aplicar Cambios</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Recargar configuración</span>
+<span class="nb">source</span> ~/.zshrc
+
+<span class="c"># O reiniciar el shell</span>
+<span class="nb">exec </span>zsh
+</code></pre></div></div>
+
+<h3 id="plugins-adicionales-opcional">Plugins Adicionales (Opcional)</h3>
+
+<p>Para una mejor experiencia, puedes instalar estos plugins populares:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Autosuggestions</span>
+git clone https://github.com/zsh-users/zsh-autosuggestions <span class="k">${</span><span class="nv">ZSH_CUSTOM</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/.oh-my-zsh-distrobox/custom</span><span class="k">}</span>/plugins/zsh-autosuggestions
+
+<span class="c"># Syntax highlighting</span>
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git <span class="k">${</span><span class="nv">ZSH_CUSTOM</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/.oh-my-zsh-distrobox/custom</span><span class="k">}</span>/plugins/zsh-syntax-highlighting
+</code></pre></div></div>
+
+<p>Luego añádelos a la lista de plugins en tu <code class="language-plaintext highlighter-rouge">.zshrc</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">plugins</span><span class="o">=(</span>
+  git
+  docker
+  ubuntu
+  command-not-found
+  colored-man-pages
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+<span class="o">)</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="comandos-útiles-de-distrobox">Comandos Útiles de Distrobox</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Listar contenedores</span>
+distrobox list
+
+<span class="c"># Eliminar un contenedor</span>
+distrobox <span class="nb">rm</span> &lt;nombre-contenedor&gt;
+
+<span class="c"># Detener un contenedor</span>
+distrobox stop &lt;nombre-contenedor&gt;
+
+<span class="c"># Exportar una aplicación al sistema anfitrión</span>
+distrobox-export <span class="nt">--app</span> &lt;nombre-aplicación&gt;
+
+<span class="c"># Ejecutar un comando sin entrar al contenedor</span>
+distrobox enter &lt;nombre-contenedor&gt; <span class="nt">--</span> &lt;comando&gt;
+
+<span class="c"># Actualizar Distrobox</span>
+curl <span class="nt">-s</span> https://raw.githubusercontent.com/89luca89/distrobox/main/install | <span class="nb">sudo </span>sh
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="consejos-y-mejores-prácticas">Consejos y Mejores Prácticas</h2>
+
+<h3 id="organización-de-contenedores">Organización de Contenedores</h3>
+
+<p>Mantén tus contenedores organizados con una estructura clara:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/distrobox/
+├── development/     <span class="c"># Entorno principal de desarrollo</span>
+├── testing/         <span class="c"># Pruebas y experimentación</span>
+├── centos9/         <span class="c"># CentOS para compatibilidad</span>
+└── archlinux/       <span class="c"># Rolling release para últimas versiones</span>
+</code></pre></div></div>
+
+<h3 id="nombres-descriptivos">Nombres Descriptivos</h3>
+
+<p>Usa nombres que indiquen claramente el propósito:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">dev-python</code> - Desarrollo Python</li>
+  <li><code class="language-plaintext highlighter-rouge">dev-nodejs</code> - Desarrollo Node.js</li>
+  <li><code class="language-plaintext highlighter-rouge">test-ubuntu</code> - Testing en Ubuntu</li>
+  <li><code class="language-plaintext highlighter-rouge">prod-centos</code> - Simulación de producción</li>
+</ul>
+
+<h3 id="backup-de-configuraciones">Backup de Configuraciones</h3>
+
+<p>Guarda tus configuraciones importantes:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Exportar lista de contenedores</span>
+distrobox list <span class="o">&gt;</span> ~/distrobox-containers.txt
+
+<span class="c"># Respaldar configuraciones de Zsh</span>
+<span class="nb">cp</span> ~/distrobox/development/.zshrc ~/backups/zshrc-distrobox-backup
+</code></pre></div></div>
+
+<h3 id="recursos-del-sistema">Recursos del Sistema</h3>
+
+<p>Los contenedores Distrobox son ligeros, pero considera:</p>
+<ul>
+  <li>No crear más contenedores de los necesarios</li>
+  <li>Detener contenedores que no estés usando activamente</li>
+  <li>Limpiar contenedores viejos regularmente</li>
+</ul>
+
+<hr />
+
+<h2 id="solución-de-problemas-comunes">Solución de Problemas Comunes</h2>
+
+<h3 id="el-socket-de-docker-no-funciona">El socket de Docker no funciona</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Verificar permisos del socket</span>
+<span class="nb">ls</span> <span class="nt">-l</span> /var/run/docker.sock
+
+<span class="c"># Asegurar que el usuario está en el grupo docker</span>
+<span class="nb">groups</span> | <span class="nb">grep </span>docker
+</code></pre></div></div>
+
+<h3 id="oh-my-zsh-no-carga-correctamente">Oh My Zsh no carga correctamente</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Verificar que la ruta es correcta</span>
+<span class="nb">echo</span> <span class="nv">$ZSH</span>
+
+<span class="c"># Verificar que el archivo existe</span>
+<span class="nb">ls</span> <span class="nt">-la</span> <span class="nv">$ZSH</span>/oh-my-zsh.sh
+
+<span class="c"># Forzar recarga</span>
+<span class="nb">source</span> ~/.zshrc
+</code></pre></div></div>
+
+<h3 id="contenedor-no-inicia">Contenedor no inicia</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Ver logs</span>
+podman logs &lt;container-id&gt;
+
+<span class="c"># Recrear el contenedor</span>
+distrobox <span class="nb">rm</span> &lt;nombre&gt;
+distrobox create <span class="o">[</span>opciones]
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="recursos-adicionales">Recursos Adicionales</h2>
+
+<ul>
+  <li><a href="https://distrobox.privatedns.org/">Documentación oficial de Distrobox</a></li>
+  <li><a href="https://github.com/89luca89/distrobox">Repositorio GitHub</a></li>
+  <li><a href="https://github.com/ohmyzsh/ohmyzsh/wiki">Oh My Zsh Documentation</a></li>
+</ul>
+
+<hr />
+
+<h2 id="conclusión">Conclusión</h2>
+
+<p>Distrobox es una herramienta increíblemente versátil que permite ejecutar múltiples distribuciones Linux en paralelo sin la complejidad de las máquinas virtuales tradicionales. Con las configuraciones presentadas en esta guía, puedes crear entornos de desarrollo aislados, seguros y altamente personalizables.</p>
+
+<p>Ya sea que necesites probar software en diferentes distribuciones, mantener entornos de desarrollo separados, o simplemente experimentar con nuevas herramientas sin comprometer tu sistema principal, Distrobox ofrece una solución elegante y eficiente.</p>]]></content><author><name>Leonel Hernández</name></author><category term="linux" /><category term="config" /><category term="distrobox" /><category term="config" /><category term="linux" /><category term="distrobox" /><category term="containers" /><category term="podman" /><category term="docker" /><summary type="html"><![CDATA[Guía Completa de Configuración de Distrobox]]></summary></entry></feed>

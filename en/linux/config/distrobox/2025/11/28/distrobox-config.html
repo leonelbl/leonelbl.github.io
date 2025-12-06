@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>Complete Distrobox Configuration Guide | My Tools Blog</title>
+  
+  <meta name="description" content="Useful notes and tools for everyday use">
+  
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://leonelbl.github.io/linux/config/distrobox/2025/11/28/distrobox-config.html">
+</head><body><header class="site-header" role="banner">
+  <div class="wrapper"><a class="site-title" rel="author" href="/en/">
+      My Tools Blog
+    </a>
+
+    <div style="float: right; margin-top: 14px;"><!-- _includes/language_selector.html -->
+<div class="language-selector" style="text-align: right; padding: 10px;">
+  🌐 
+  
+    <a href="#" id="switch-to-spanish">ES</a> | <strong>EN</strong>
+  
+</div>
+
+
+<script>
+  document.getElementById('switch-to-spanish').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    // Obtener URL actual
+    let currentPath = window.location.pathname;
+    console.log('URL actual:', currentPath);
+    
+    // Remover /en/ o /en del path
+    let spanishPath = currentPath.replace(/^\/en\//, '/').replace(/^\/en$/, '/');
+    console.log('URL español:', spanishPath);
+    
+    // Redirigir
+    window.location.href = spanishPath;
+  });
+</script>
+<style>
+  .language-selector a {
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  .language-selector a:hover {
+    background-color: #f0f0f0;
+  }
+</style>
+</div><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/en/about/">About</a></div>
+      </nav></div>
+</header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Complete Distrobox Configuration Guide</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2025-11-28T00:00:00+00:00" itemprop="datePublished">Nov 28, 2025
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="complete-distrobox-configuration-guide">Complete Distrobox Configuration Guide</h1>
+
+<p>Distrobox is a powerful tool that allows you to run any Linux distribution inside your terminal, using containers but with full access to your file system and hardware. This guide covers everything from basic container creation to advanced configurations.</p>
+
+<h2 id="what-is-distrobox">What is Distrobox?</h2>
+
+<p>Distrobox allows you to create and manage containers of different Linux distributions without the typical restrictions of traditional containers. You can run graphical applications, access your home directory, use USB devices, and even export applications to the host system.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p>Before starting, make sure you have installed:</p>
+<ul>
+  <li><strong>Podman</strong> or <strong>Docker</strong></li>
+  <li><strong>Distrobox</strong></li>
+</ul>
+
+<p>installation (Distrobox):</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> https://raw.githubusercontent.com/89luca89/distrobox/main/install | <span class="nb">sudo </span>sh 
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="container-creation">Container Creation</h2>
+
+<h3 id="example-1-basic-configuration">Example 1: Basic Configuration</h3>
+
+<p>This is the simplest way to create a Distrobox container with a custom home directory.</p>
+
+<p><strong>Features:</strong></p>
+<ul>
+  <li>Default image name (generates one automatically)</li>
+  <li>Custom home directory</li>
+  <li>Ideal for quick tests or temporary environments</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create CentOS Stream 9 container with custom home</span>
+distrobox create <span class="nt">--pull</span> <span class="nt">--image</span> centos:stream9 <span class="nt">--home</span> ~/distrobox/centos9
+</code></pre></div></div>
+
+<p><strong>Usage:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Enter the container</span>
+distrobox enter centos-stream-9
+</code></pre></div></div>
+
+<hr />
+
+<h3 id="example-2-custom-configuration">Example 2: Custom Configuration</h3>
+
+<p>A step forward: assigning a specific name to the container makes it easier to manage and more identifiable.</p>
+
+<p><strong>Features:</strong></p>
+<ul>
+  <li>Custom container name</li>
+  <li>Custom home directory</li>
+  <li>Better organization for multiple environments</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create Ubuntu 24.04 container with custom name and home</span>
+distrobox create <span class="nt">--name</span> development <span class="se">\</span>
+  <span class="nt">--pull</span> <span class="se">\</span>
+  <span class="nt">--image</span> ubuntu:24.04 <span class="se">\</span>
+  <span class="nt">--home</span> ~/distrobox/development
+</code></pre></div></div>
+
+<p><strong>Usage:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Enter using the custom name</span>
+distrobox enter development
+</code></pre></div></div>
+
+<p><strong>Advantages of using custom names:</strong></p>
+<ul>
+  <li>Easy identification of the container’s purpose</li>
+  <li>Shorter and more memorable commands</li>
+  <li>Better management when you have multiple containers</li>
+</ul>
+
+<hr />
+
+<h3 id="example-3-system-docker-access-advanced-configuration">Example 3: System Docker Access (Advanced Configuration)</h3>
+
+<p>This configuration is especially useful for development when you need to use Docker from inside your Distrobox container without installing Docker Engine inside the container.</p>
+
+<p><strong>Features:</strong></p>
+<ul>
+  <li>Custom name: <code class="language-plaintext highlighter-rouge">development</code></li>
+  <li>Custom home: <code class="language-plaintext highlighter-rouge">~/distrobox/development</code></li>
+  <li>Docker socket shared with the host system</li>
+  <li>Allows running Docker commands from the container</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>distrobox create <span class="nt">--name</span> development <span class="se">\</span>
+  <span class="nt">--pull</span> <span class="se">\</span>
+  <span class="nt">--image</span> ubuntu:24.04 <span class="se">\</span>
+  <span class="nt">--home</span> ~/distrobox/development <span class="se">\</span>
+  <span class="nt">--additional-flags</span> <span class="s2">"--volume /var/run/docker.sock:/var/run/docker.sock:rw"</span>
+</code></pre></div></div>
+
+<p><strong>Post-creation configuration:</strong></p>
+
+<p>After creating the container, you need to add your user to the docker group inside the container:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Enter the container</span>
+distrobox enter development
+
+<span class="c"># Install Docker CLI (not the daemon, just the client)</span>
+<span class="nb">sudo </span>apt update
+<span class="nb">sudo </span>apt <span class="nb">install </span>docker.io <span class="nt">-y</span>
+
+<span class="c"># Add your user to the docker group</span>
+<span class="nb">sudo </span>usermod <span class="nt">-aG</span> docker <span class="nv">$USER</span>
+
+<span class="c"># Exit and re-enter to apply changes</span>
+<span class="nb">exit
+</span>distrobox enter development
+
+<span class="c"># Verify it works</span>
+docker ps
+</code></pre></div></div>
+
+<p><strong>Use cases:</strong></p>
+<ul>
+  <li>Containerized application development</li>
+  <li>Docker image testing</li>
+  <li>Container orchestration from an isolated environment</li>
+  <li>CI/CD in local environments</li>
+</ul>
+
+<blockquote>
+  <p><strong>⚠️ Important:</strong> Sharing the Docker socket is equivalent to giving root access to the system. Use this configuration only in trusted development environments.</p>
+</blockquote>
+
+<hr />
+
+<h2 id="custom-oh-my-zsh-installation">Custom Oh My Zsh Installation</h2>
+
+<p>Installing Oh My Zsh inside Distrobox requires a special approach to keep the configuration isolated from the host system. This guide allows you to have independent Zsh configurations on your main system and in each container.</p>
+
+<h3 id="why-a-custom-installation">Why a custom installation?</h3>
+
+<p>The standard Oh My Zsh installation can cause conflicts when:</p>
+<ul>
+  <li>You share the home directory with the host system</li>
+  <li>You want different configurations in each container</li>
+  <li>You need to maintain different versions of plugins or themes</li>
+</ul>
+
+<h3 id="step-1-download-the-installation-script">Step 1: Download the Installation Script</h3>
+
+<p>First, download the official Oh My Zsh installer to your home directory inside the container:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-fsSL</span> https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh <span class="nt">-o</span> install_omz.sh
+</code></pre></div></div>
+
+<h3 id="step-2-installation-with-custom-variables">Step 2: Installation with Custom Variables</h3>
+
+<p>The key is to use environment variables to change the installation location:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">ZSH</span><span class="o">=</span><span class="nv">$HOME</span>/.oh-my-zsh-distrobox <span class="nv">CHSH</span><span class="o">=</span>no <span class="nv">RUNZSH</span><span class="o">=</span>no sh install_omz.sh
+</code></pre></div></div>
+
+<p><strong>Variable explanation:</strong></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ZSH=$HOME/.oh-my-zsh-distrobox</code>: Defines a custom directory for Oh My Zsh</li>
+  <li><code class="language-plaintext highlighter-rouge">CHSH=no</code>: Prevents automatically changing the default shell</li>
+  <li><code class="language-plaintext highlighter-rouge">RUNZSH=no</code>: Doesn’t start Zsh immediately after installation</li>
+</ul>
+
+<h3 id="step-3-configure-zsh">Step 3: Configure Zsh</h3>
+
+<p>Edit (or create) the configuration file in your Distrobox:</p>
+
+<p><strong>Path:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  /home/&lt;your_user&gt;/distrobox/development/.zshrc
+</code></pre></div></div>
+
+<p>Add these lines:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">ZSH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.oh-my-zsh-distrobox"</span>
+<span class="nb">source</span> <span class="nv">$ZSH</span>/oh-my-zsh.sh
+</code></pre></div></div>
+
+<blockquote>
+  <p><strong>Note:</strong> With this configuration, your Zsh inside Distrobox:</p>
+  <ul>
+    <li>Will load its <strong>own</strong> <code class="language-plaintext highlighter-rouge">.zshrc</code> (in <code class="language-plaintext highlighter-rouge">/distrobox/development/.zshrc</code>)</li>
+    <li>Will use its <strong>own</strong> Oh My Zsh installation (in <code class="language-plaintext highlighter-rouge">/distrobox/development/.oh-my-zsh-distrobox</code>)</li>
+  </ul>
+
+  <p>This keeps the installation completely isolated from the parent system, regardless of whether they share the mounted <code class="language-plaintext highlighter-rouge">/home/&lt;your_user&gt;/</code> directory.</p>
+</blockquote>
+
+<p><strong>Additional configuration (optional):</strong></p>
+
+<p>You can add more customization to your <code class="language-plaintext highlighter-rouge">.zshrc</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Theme (you can change it)</span>
+<span class="nv">ZSH_THEME</span><span class="o">=</span><span class="s2">"robbyrussell"</span>
+
+<span class="c"># Recommended plugins for development</span>
+<span class="nv">plugins</span><span class="o">=(</span>
+  git
+  docker
+  ubuntu
+  command-not-found
+  colored-man-pages
+<span class="o">)</span>
+
+<span class="c"># Your personal aliases and configurations</span>
+<span class="nb">alias </span><span class="nv">ll</span><span class="o">=</span><span class="s1">'ls -lah'</span>
+<span class="nb">alias </span><span class="nv">update</span><span class="o">=</span><span class="s1">'sudo apt update &amp;&amp; sudo apt upgrade -y'</span>
+</code></pre></div></div>
+
+<h3 id="step-4-apply-changes">Step 4: Apply Changes</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Reload configuration</span>
+<span class="nb">source</span> ~/.zshrc
+
+<span class="c"># Or restart the shell</span>
+<span class="nb">exec </span>zsh
+</code></pre></div></div>
+
+<h3 id="additional-plugins-optional">Additional Plugins (Optional)</h3>
+
+<p>For a better experience, you can install these popular plugins:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Autosuggestions</span>
+git clone https://github.com/zsh-users/zsh-autosuggestions <span class="k">${</span><span class="nv">ZSH_CUSTOM</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/.oh-my-zsh-distrobox/custom</span><span class="k">}</span>/plugins/zsh-autosuggestions
+
+<span class="c"># Syntax highlighting</span>
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git <span class="k">${</span><span class="nv">ZSH_CUSTOM</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/.oh-my-zsh-distrobox/custom</span><span class="k">}</span>/plugins/zsh-syntax-highlighting
+</code></pre></div></div>
+
+<p>Then add them to the plugin list in your <code class="language-plaintext highlighter-rouge">.zshrc</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">plugins</span><span class="o">=(</span>
+  git
+  docker
+  ubuntu
+  command-not-found
+  colored-man-pages
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+<span class="o">)</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="useful-distrobox-commands">Useful Distrobox Commands</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># List containers</span>
+distrobox list
+
+<span class="c"># Remove a container</span>
+distrobox <span class="nb">rm</span> &lt;container-name&gt;
+
+<span class="c"># Stop a container</span>
+distrobox stop &lt;container-name&gt;
+
+<span class="c"># Export an application to the host system</span>
+distrobox-export <span class="nt">--app</span> &lt;application-name&gt;
+
+<span class="c"># Execute a command without entering the container</span>
+distrobox enter &lt;container-name&gt; <span class="nt">--</span> &lt;<span class="nb">command</span><span class="o">&gt;</span>
+
+<span class="c"># Update Distrobox</span>
+curl <span class="nt">-s</span> https://raw.githubusercontent.com/89luca89/distrobox/main/install | <span class="nb">sudo </span>sh
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="tips-and-best-practices">Tips and Best Practices</h2>
+
+<h3 id="container-organization">Container Organization</h3>
+
+<p>Keep your containers organized with a clear structure:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/distrobox/
+├── development/     <span class="c"># Main development environment</span>
+├── testing/         <span class="c"># Testing and experimentation</span>
+├── centos9/         <span class="c"># CentOS for compatibility</span>
+└── archlinux/       <span class="c"># Rolling release for latest versions</span>
+</code></pre></div></div>
+
+<h3 id="descriptive-names">Descriptive Names</h3>
+
+<p>Use names that clearly indicate the purpose:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">dev-python</code> - Python development</li>
+  <li><code class="language-plaintext highlighter-rouge">dev-nodejs</code> - Node.js development</li>
+  <li><code class="language-plaintext highlighter-rouge">test-ubuntu</code> - Ubuntu testing</li>
+  <li><code class="language-plaintext highlighter-rouge">prod-centos</code> - Production simulation</li>
+</ul>
+
+<h3 id="configuration-backups">Configuration Backups</h3>
+
+<p>Save your important configurations:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Export container list</span>
+distrobox list <span class="o">&gt;</span> ~/distrobox-containers.txt
+
+<span class="c"># Backup Zsh configurations</span>
+<span class="nb">cp</span> ~/distrobox/development/.zshrc ~/backups/zshrc-distrobox-backup
+</code></pre></div></div>
+
+<h3 id="system-resources">System Resources</h3>
+
+<p>Distrobox containers are lightweight, but consider:</p>
+<ul>
+  <li>Don’t create more containers than necessary</li>
+  <li>Stop containers you’re not actively using</li>
+  <li>Clean up old containers regularly</li>
+</ul>
+
+<hr />
+
+<h2 id="common-troubleshooting">Common Troubleshooting</h2>
+
+<h3 id="docker-socket-doesnt-work">Docker socket doesn’t work</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check socket permissions</span>
+<span class="nb">ls</span> <span class="nt">-l</span> /var/run/docker.sock
+
+<span class="c"># Ensure the user is in the docker group</span>
+<span class="nb">groups</span> | <span class="nb">grep </span>docker
+</code></pre></div></div>
+
+<h3 id="oh-my-zsh-doesnt-load-correctly">Oh My Zsh doesn’t load correctly</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Verify the path is correct</span>
+<span class="nb">echo</span> <span class="nv">$ZSH</span>
+
+<span class="c"># Verify the file exists</span>
+<span class="nb">ls</span> <span class="nt">-la</span> <span class="nv">$ZSH</span>/oh-my-zsh.sh
+
+<span class="c"># Force reload</span>
+<span class="nb">source</span> ~/.zshrc
+</code></pre></div></div>
+
+<h3 id="container-wont-start">Container won’t start</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># View logs</span>
+podman logs &lt;container-id&gt;
+
+<span class="c"># Recreate the container</span>
+distrobox <span class="nb">rm</span> &lt;name&gt;
+distrobox create <span class="o">[</span>options]
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="additional-resources">Additional Resources</h2>
+
+<ul>
+  <li><a href="https://distrobox.privatedns.org/">Official Distrobox Documentation</a></li>
+  <li><a href="https://github.com/89luca89/distrobox">GitHub Repository</a></li>
+  <li><a href="https://github.com/ohmyzsh/ohmyzsh/wiki">Oh My Zsh Documentation</a></li>
+</ul>
+
+<hr />
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Distrobox is an incredibly versatile tool that allows you to run multiple Linux distributions in parallel without the complexity of traditional virtual machines. With the configurations presented in this guide, you can create isolated, secure, and highly customizable development environments.</p>
+
+<p>Whether you need to test software on different distributions, maintain separate development environments, or simply experiment with new tools without compromising your main system, Distrobox offers an elegant and efficient solution.</p>
+
+  </div><a class="u-url" href="/en/linux/config/distrobox/2025/11/28/distrobox-config.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/en/"></data>
+
+  <div class="wrapper">
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Leonel Hernández</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/leonelbl"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">leonelbl</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Useful notes and tools for everyday use</p>
+      </div>
+    </div>
+  </div>
+</footer></body>
+</html>
