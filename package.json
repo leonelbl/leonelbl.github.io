@@ -13,7 +13,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.23.0",
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
     "astro": "^6.1.3"
