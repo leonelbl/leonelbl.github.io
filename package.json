@@ -1,0 +1,21 @@
+{
+  "name": "leonelbl.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.23.0",
+  "dependencies": {
+    "@astrojs/rss": "^4.0.18",
+    "astro": "^6.1.3"
+  }
+}

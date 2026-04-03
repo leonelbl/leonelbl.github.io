@@ -1,0 +1,22 @@
+{
+  "global": {
+    "title": "My Tools Blog",
+    "description": "Useful notes and tools for everyday use"
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "posts": "Posts"
+  },
+  "posts": {
+    "read_more": "Read more",
+    "published": "Published on",
+    "categories": "Categories",
+    "tags": "Tags"
+  },
+  "home": {
+    "welcome": "Welcome to my blog",
+    "subtitle": "Useful tools and configurations",
+    "latest_posts": "Latest Posts"
+  }
+}

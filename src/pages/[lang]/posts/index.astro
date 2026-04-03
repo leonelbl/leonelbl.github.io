@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostCard from '../../../components/PostCard.astro';
+import { supportedLangs } from '../../../lib/i18n';
+import { getCollection } from 'astro:content';
+import type { Lang } from '../../../lib/i18n';
+
+export function getStaticPaths() {
+  return supportedLangs.map((lang) => ({
+    params: { lang },
+  }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const t = (await import(`../../../i18n/${lang}.json`)).default;
+
+const allPosts = await getCollection('posts');
+const posts = allPosts
+  .filter(post => post.data.lang === lang)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title={t.navigation.posts} description={t.global.description}>
+  <h1 class="post-list-heading">{t.navigation.posts}</h1>
+  <ul class="post-list">
+    {posts.map((post) => (
+      <PostCard post={post} />
+    ))}
+  </ul>
+</BaseLayout>

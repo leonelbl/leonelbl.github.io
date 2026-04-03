@@ -1,0 +1,22 @@
+{
+  "global": {
+    "title": "Mi Blog de Herramientas",
+    "description": "Notas y herramientas útiles para el día a día"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "about": "Acerca de",
+    "posts": "Publicaciones"
+  },
+  "posts": {
+    "read_more": "Leer más",
+    "published": "Publicado el",
+    "categories": "Categorías",
+    "tags": "Etiquetas"
+  },
+  "home": {
+    "welcome": "Bienvenido a mi blog",
+    "subtitle": "Herramientas y configuraciones útiles",
+    "latest_posts": "Últimas publicaciones"
+  }
+}

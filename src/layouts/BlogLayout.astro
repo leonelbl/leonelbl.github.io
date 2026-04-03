@@ -1,0 +1,218 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import PostNavigation from '../components/PostNavigation.astro';
+import RelatedPosts from '../components/RelatedPosts.astro';
+import ReadingTime from '../components/ReadingTime.astro';
+import CodeCopyButton from '../components/CodeCopyButton.astro';
+import SocialMeta from '../components/SocialMeta.astro';
+import { getLangFromUrl } from '../lib/i18n';
+
+interface Props {
+  title: string;
+  description?: string;
+  date?: Date;
+  categories?: string[];
+  tags?: string[];
+  headings?: { depth: number; slug: string; text: string }[];
+  rawContent?: string;
+  slug?: string;
+}
+
+const { title, description, date, categories, tags, headings = [], rawContent = '', slug = '' } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = (await import(`../i18n/${lang}.json`)).default;
+---
+
+<BaseLayout title={title} description={description}>
+  <SocialMeta title={title} description={description} />
+  <CodeCopyButton />
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">{title}</h1>
+      
+      <div class="post-meta">
+        {date && (
+          <span class="date">
+            {t.posts.published}: {date.toLocaleDateString(lang === 'en' ? 'en-US' : 'es-ES', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </span>
+        )}
+        {rawContent && <ReadingTime content={rawContent} />}
+      </div>
+      
+      {categories && categories.length > 0 && (
+        <div class="post-categories">
+          <span class="label">{t.posts.categories}:</span>
+          {categories.map((cat) => (
+            <span class="category">{cat}</span>
+          ))}
+        </div>
+      )}
+      
+      {tags && tags.length > 0 && (
+        <div class="post-tags">
+          <span class="label">{t.posts.tags}:</span>
+          {tags.map((tag) => (
+            <a href={`/${lang}/tags/${tag}/`} class="tag">{tag}</a>
+          ))}
+        </div>
+      )}
+    </header>
+    
+    <TableOfContents headings={headings} />
+    
+    <div class="post-content">
+      <slot />
+    </div>
+    
+    <PostNavigation 
+      currentPost={{ id: slug, slug, data: { title, date, tags, lang } as any }}
+    />
+    
+    <RelatedPosts 
+      currentPost={{ id: slug, slug, data: { title, date, tags, lang } as any }}
+    />
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    max-width: 100%;
+  }
+  
+  .post-header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+    
+    .post-title {
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .post-categories,
+    .post-tags {
+      margin-top: 0.5rem;
+      
+      .label {
+        color: var(--text-secondary);
+        margin-right: 0.5rem;
+      }
+      
+      .category,
+      .tag {
+        display: inline-block;
+        background-color: rgba(21, 101, 168, 0.3);
+        color: var(--primary-light);
+        border: 1px solid var(--primary-light);
+        padding: 3px 10px;
+        border-radius: 3px;
+        font-size: 12px;
+        margin-right: 5px;
+        text-decoration: none;
+        transition: all 0.2s;
+        
+        &:hover {
+          background-color: rgba(21, 101, 168, 0.5);
+        }
+      }
+    }
+  }
+  
+  .post-content {
+    :global(h2) {
+      border-left: 4px solid var(--accent);
+      padding-left: 15px;
+      margin-top: 40px;
+      color: var(--text-primary);
+    }
+    
+    :global(h3) {
+      color: var(--text-primary);
+      margin-top: 30px;
+    }
+    
+    :global(pre) {
+      background-color: #1d1f20;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 15px;
+      overflow-x: auto;
+      font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+    }
+    
+    :global(code) {
+      background-color: #1d1f20;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 6px;
+      color: #e06c75;
+      font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+      font-size: 0.9em;
+    }
+    
+    :global(pre code) {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      color: #abb2bf;
+    }
+    
+    :global(blockquote) {
+      border-left: 4px solid var(--accent);
+      background-color: var(--surface);
+      padding: 15px 20px;
+      margin: 20px 0;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+    
+    :global(img) {
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      max-width: 100%;
+      height: auto;
+      border: 1px solid var(--border);
+    }
+    
+    :global(table) {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 20px 0;
+      background-color: var(--surface);
+      
+      th {
+        background-color: var(--primary-light);
+        color: var(--text-primary);
+        padding: 10px;
+        text-align: left;
+        border: 1px solid var(--border);
+      }
+      
+      td {
+        border: 1px solid var(--border);
+        padding: 10px;
+        color: var(--text-primary);
+      }
+    }
+    
+    :global(strong) {
+      color: var(--accent);
+    }
+  }
+</style>

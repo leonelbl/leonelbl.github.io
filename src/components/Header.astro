@@ -1,0 +1,281 @@
+---
+import LanguageSelector from './LanguageSelector.astro';
+import { getLangFromUrl } from '../lib/i18n';
+import { getLocalizedPath } from '../lib/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = (await import(`../i18n/${lang}.json`)).default;
+---
+
+<header class="site-header">
+  <div class="header-container">
+    <a href={getLocalizedPath('/', lang)} class="site-title">
+      {t.global.title}
+    </a>
+
+    <nav class="site-nav" id="main-nav">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+
+      <div class="nav-menu" id="nav-menu">
+        <div class="nav-links">
+          <a class="page-link" href={getLocalizedPath('/', lang)}>
+            {t.navigation.home}
+          </a>
+          <a class="page-link" href={getLocalizedPath('/posts', lang)}>
+            {t.navigation.posts}
+          </a>
+          <a class="page-link" href={getLocalizedPath('/tags', lang)}>
+            {lang === 'en' ? 'Tags' : 'Etiquetas'}
+          </a>
+          <a class="page-link" href={getLocalizedPath('/about', lang)}>
+            {t.navigation.about}
+          </a>
+        </div>
+        <div class="nav-actions">
+          <a href={`/${lang === 'en' ? 'rss/en.xml' : 'rss/es.xml'}`} class="rss-link" title="RSS" aria-label="RSS Feed">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 11a9 9 0 0 1 9 9"></path>
+              <path d="M4 4a16 16 0 0 1 16 16"></path>
+              <circle cx="5" cy="19" r="1"></circle>
+            </svg>
+          </a>
+          <LanguageSelector />
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(42, 42, 42, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  .header-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .site-title {
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.35rem;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+  }
+
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    position: relative;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: var(--text-primary);
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    position: absolute;
+  }
+
+  .hamburger span:nth-child(1) { top: 4px; }
+  .hamburger span:nth-child(2) { top: 11px; }
+  .hamburger span:nth-child(3) { top: 18px; }
+
+  .menu-toggle[aria-expanded="true"] .hamburger span:nth-child(1) {
+    top: 11px;
+    transform: rotate(45deg);
+  }
+
+  .menu-toggle[aria-expanded="true"] .hamburger span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  .menu-toggle[aria-expanded="true"] .hamburger span:nth-child(3) {
+    top: 11px;
+    transform: rotate(-45deg);
+  }
+
+  .nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.75rem;
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--border);
+  }
+
+  .page-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color 0.2s;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    &:hover {
+      color: var(--accent);
+      text-decoration: none;
+
+      &::after {
+        width: 100%;
+      }
+    }
+  }
+
+  .rss-link {
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    transition: color 0.2s, transform 0.2s;
+
+    &:hover {
+      color: var(--accent);
+      transform: scale(1.1);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .menu-toggle {
+      display: flex;
+    }
+
+    .nav-menu {
+      position: fixed;
+      top: 57px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--surface);
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 2rem 1.5rem;
+      gap: 2rem;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+    }
+
+    .nav-menu.open {
+      transform: translateX(0);
+    }
+
+    .nav-links {
+      flex-direction: column;
+      width: 100%;
+      gap: 0;
+    }
+
+    .page-link {
+      display: block;
+      padding: 1rem 0;
+      font-size: 1.1rem;
+      border-bottom: 1px solid var(--border);
+
+      &::after {
+        display: none;
+      }
+    }
+
+    .nav-actions {
+      padding-left: 0;
+      padding-top: 1rem;
+      border-left: none;
+      border-top: 1px solid var(--border);
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header-container {
+      padding: 0.6rem 1rem;
+    }
+
+    .site-title {
+      font-size: 1.1rem;
+    }
+  }
+</style>
+
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const navMenu = document.getElementById('nav-menu');
+
+  if (menuToggle && navMenu) {
+    menuToggle.addEventListener('click', () => {
+      const isOpen = navMenu.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', isOpen.toString());
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    document.querySelectorAll('.page-link').forEach(link => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+  }
+</script>

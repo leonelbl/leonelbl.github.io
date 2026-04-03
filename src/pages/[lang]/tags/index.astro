@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { supportedLangs } from '../../../lib/i18n';
+
+export function getStaticPaths() {
+  return supportedLangs.map(lang => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const t = (await import(`../../../i18n/${lang}.json`)).default;
+
+const posts = await getCollection('posts');
+const langPosts = posts.filter(post => post.data.lang === lang);
+
+const allTags = [...new Set(langPosts.flatMap(post => post.data.tags || []))];
+const tagCounts = allTags.reduce((acc, tag) => {
+  acc[tag] = langPosts.filter(post => post.data.tags?.includes(tag)).length;
+  return acc;
+}, {} as Record<string, number>);
+
+const sortedTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
+---
+
+<BaseLayout title={lang === 'en' ? 'All Tags' : 'Todas las Etiquetas'}>
+  <div class="tags-page">
+    <h1 class="tags-title">
+      {lang === 'en' ? 'All Tags' : 'Todas las Etiquetas'}
+    </h1>
+    
+    <div class="tags-grid">
+      {sortedTags.map(([tag, count]) => (
+        <a href={`/${lang}/tags/${tag}/`} class="tag-card">
+          <span class="tag-name"># {tag}</span>
+          <span class="tag-count">{count}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .tags-page {
+    max-width: 100%;
+  }
+  
+  .tags-title {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--accent);
+  }
+  
+  .tags-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+  
+  .tag-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(230, 132, 5, 0.2);
+    }
+  }
+  
+  .tag-name {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  
+  .tag-count {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    background-color: var(--background);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+  }
+</style>

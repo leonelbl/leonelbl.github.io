@@ -1,0 +1,95 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Post {
+  id: string;
+  data: {
+    title: string;
+    date: Date;
+    tags?: string[];
+    lang: 'en' | 'es';
+  };
+}
+
+interface Props {
+  currentPost: Post;
+  maxItems?: number;
+}
+
+const { currentPost, maxItems = 3 } = Astro.props;
+const lang = currentPost.data.lang;
+const currentTags = currentPost.data.tags || [];
+
+const allPosts = await getCollection('posts');
+const relatedPosts = allPosts
+  .filter(post => 
+    post.data.lang === lang && 
+    post.id !== currentPost.id &&
+    post.data.tags?.some(tag => currentTags.includes(tag))
+  )
+  .sort((a, b) => {
+    const aMatches = a.data.tags?.filter(tag => currentTags.includes(tag)).length || 0;
+    const bMatches = b.data.tags?.filter(tag => currentTags.includes(tag)).length || 0;
+    return bMatches - aMatches;
+  })
+  .slice(0, maxItems);
+
+const getSlug = (post: typeof allPosts[0]) => {
+  return post.id.replace(/\.(en|es)\./, '.').replace(/\.(md|mdx)$/, '');
+};
+---
+
+{relatedPosts.length > 0 && (
+  <section class="related-posts">
+    <h3 class="related-title">
+      {lang === 'en' ? 'Related Posts' : 'Posts Relacionados'}
+    </h3>
+    <ul class="related-list">
+      {relatedPosts.map(post => (
+        <li>
+          <a href={`/${lang}/posts/${getSlug(post)}`}>
+            {post.data.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .related-posts {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--border);
+  }
+  
+  .related-title {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+  
+  .related-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+    li {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      a {
+        color: var(--primary-light);
+        text-decoration: none;
+        font-weight: 500;
+        
+        &:hover {
+          color: var(--accent);
+        }
+      }
+    }
+  }
+</style>

@@ -1,0 +1,51 @@
+---
+import { getLangFromUrl, supportedLangs } from '../lib/i18n';
+import { getLocalizedPath, removeLangFromPath } from '../lib/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const currentPath = removeLangFromPath(Astro.url.pathname);
+---
+
+<div class="language-selector">
+  <span class="globe-icon">🌐</span>
+  {supportedLangs.map((l) => (
+    <span>
+      {l === lang ? (
+        <strong>{l.toUpperCase()}</strong>
+      ) : (
+        <a href={getLocalizedPath(currentPath, l)}>{l.toUpperCase()}</a>
+      )}
+      {l !== supportedLangs[supportedLangs.length - 1] && ' | '}
+    </span>
+  ))}
+</div>
+
+<style>
+  .language-selector {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    .globe-icon {
+      font-size: 1.2rem;
+    }
+    
+    a {
+      color: var(--text-primary);
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: rgba(230, 132, 5, 0.2);
+        color: var(--accent);
+      }
+    }
+    
+    strong {
+      color: var(--accent);
+      padding: 5px 10px;
+    }
+  }
+</style>

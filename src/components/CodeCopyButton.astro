@@ -1,0 +1,75 @@
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const copyButtonLabel = 'Copy';
+  const copiedLabel = 'Copied!';
+  
+  document.querySelectorAll('pre').forEach((pre) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-wrapper';
+    pre.parentNode?.insertBefore(wrapper, pre);
+    wrapper.appendChild(pre);
+    
+    const button = document.createElement('button');
+    button.className = 'copy-button';
+    button.textContent = copyButtonLabel;
+    
+    button.addEventListener('click', async () => {
+      const code = pre.querySelector('code');
+      const textToCopy = code?.textContent || pre.textContent || '';
+      
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        button.textContent = copiedLabel;
+        button.classList.add('copied');
+        
+        setTimeout(() => {
+          button.textContent = copyButtonLabel;
+          button.classList.remove('copied');
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    });
+    
+    wrapper.appendChild(button);
+  });
+});
+</script>
+
+<style is:global>
+  .code-wrapper {
+    position: relative;
+    margin: 1.5rem 0;
+  }
+  
+  .code-wrapper pre {
+    margin: 0;
+    padding-top: 3rem !important;
+  }
+  
+  .copy-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+  }
+  
+  .copy-button:hover {
+    color: var(--text-primary);
+    border-color: var(--accent);
+  }
+  
+  .copy-button.copied {
+    color: #10b981;
+    border-color: #10b981;
+  }
+</style>

@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostCard from '../../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { supportedLangs } from '../../../lib/i18n';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
+  
+  return supportedLangs.flatMap(lang => 
+    allTags.map(tag => ({
+      params: { lang, tag },
+      props: { tag },
+    }))
+  );
+}
+
+const { lang, tag } = Astro.params;
+const t = (await import(`../../../i18n/${lang}.json`)).default;
+
+const allPosts = await getCollection('posts');
+const tagPosts = allPosts
+  .filter(post => post.data.lang === lang && post.data.tags?.includes(tag))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title={`${tag} - ${t.navigation.posts}`} description={`${t.navigation.posts} tagged with ${tag}`}>
+  <div class="tag-page">
+    <header class="tag-header">
+      <a href={`/${lang}/tags/`} class="back-link">
+        ← {lang === 'en' ? 'All tags' : 'Todas las etiquetas'}
+      </a>
+      <h1 class="tag-title">
+        <span class="tag-icon">#</span>
+        {tag}
+      </h1>
+      <p class="tag-count">
+        {tagPosts.length} {tagPosts.length === 1 ? (lang === 'en' ? 'post' : 'publicación') : (lang === 'en' ? 'posts' : 'publicaciones')}
+      </p>
+    </header>
+
+    <ul class="post-list">
+      {tagPosts.map(post => (
+        <PostCard post={post} />
+      ))}
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .tag-page {
+    max-width: 100%;
+  }
+  
+  .tag-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--accent);
+  }
+  
+  .back-link {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+    
+    &:hover {
+      color: var(--accent);
+    }
+  }
+  
+  .tag-title {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .tag-icon {
+    color: var(--accent);
+  }
+  
+  .tag-count {
+    color: var(--text-secondary);
+    margin: 0;
+  }
+</style>
