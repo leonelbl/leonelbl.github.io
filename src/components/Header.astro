@@ -217,11 +217,10 @@ const t = (await import(`../i18n/${lang}.json`)).default;
     }
 
     .nav-menu {
-      position: fixed;
+      position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      bottom: 0;
       background: var(--surface);
       flex-direction: column;
       align-items: flex-start;
@@ -229,8 +228,9 @@ const t = (await import(`../i18n/${lang}.json`)).default;
       gap: 0;
       transform: translateX(100%);
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow-y: auto;
+      overflow-y: visible;
       z-index: 1000;
+      height: auto;
     }
 
     .nav-menu.open {
