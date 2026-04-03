@@ -17,6 +17,9 @@ Soy un entusiasta de Linux y desarrollo de software. En este blog comparto confi
 - Herramientas de desarrollo
 - Automatización y scripts
 
+### Proyectos:
+- [organizador-archivos](https://crates.io/crates/organizador-archivos) — Paquete de Rust para organizar archivos
+
 {% else %}
 
 ## About
@@ -28,5 +31,8 @@ I'm a Linux enthusiast and software developer. In this blog I share configuratio
 - Containers and virtualization (Distrobox, Docker)
 - Development tools
 - Automation and scripts
+
+### Projects:
+- [organizador-archivos](https://crates.io/crates/organizador-archivos) — Rust package to organize files
 
 {% endif %}
