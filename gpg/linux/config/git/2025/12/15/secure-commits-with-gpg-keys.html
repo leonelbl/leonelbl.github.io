@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>Asegura tus Commits de Git con Llaves GPG | Mi Blog de Herramientas</title>
+  
+  <meta name="description" content="Notas y herramientas útiles para el día a día">
+  
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://leonelbl.github.io/gpg/linux/config/git/2025/12/15/secure-commits-with-gpg-keys.html">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BN0RBJ2Y07"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-BN0RBJ2Y07');
+  </script>
+</head><body><header class="site-header" role="banner">
+  <div class="wrapper"><a class="site-title" rel="author" href="/">
+      Mi Blog de Herramientas
+    </a>
+
+    <div style="float: right; margin-top: 14px;"><!-- _includes/language_selector.html -->
+<div class="language-selector" style="text-align: right; padding: 10px;">
+  🌐 
+  
+    <strong>ES</strong> | <a href="/en/gpg/linux/config/git/2025/12/15/secure-commits-with-gpg-keys.html">EN</a>
+  
+</div>
+
+</div><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Asegura tus Commits de Git con Llaves GPG</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2025-12-15T00:00:00+00:00" itemprop="datePublished">Dec 15, 2025
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="asegura-tus-commits-de-git-con-llaves-gpg">Asegura tus Commits de Git con Llaves GPG</h1>
+
+<blockquote>
+  <p><strong>TL;DR</strong>: Firmar commits con GPG te permite demostrar autoría, proteger tu reputación y cumplir políticas de seguridad. En esta guía aprenderás desde lo básico hasta una configuración avanzada con <strong>múltiples identidades por directorio</strong>, además de buenas prácticas reales.</p>
+</blockquote>
+
+<hr />
+
+<h2 id="tabla-de-contenidos">Tabla de contenidos</h2>
+
+<ol>
+  <li><a href="#introducción">Introducción</a></li>
+  <li><a href="#qué-es-gpg-y-para-qué-se-usa-en-git">¿Qué es GPG y para qué se usa en Git?</a></li>
+  <li><a href="#por-qué-firmar-tus-commits">¿Por qué firmar tus commits?</a></li>
+  <li><a href="#instalación-de-gpg">Instalación de GPG</a></li>
+  <li><a href="#configuración-básica">Configuración básica</a></li>
+  <li><a href="#firmar-commits-y-tags">Firmar commits y tags</a></li>
+  <li><a href="#múltiples-llaves-gpg-por-contexto-trabajo--personal">Múltiples llaves GPG por contexto (trabajo / personal)</a></li>
+  <li><a href="#verificación-de-firmas">Verificación de firmas</a></li>
+  <li><a href="#solución-de-problemas-comunes">Solución de problemas comunes</a></li>
+  <li><a href="#buenas-prácticas-de-seguridad">Buenas prácticas de seguridad</a></li>
+  <li><a href="#respaldo-y-recuperación">Respaldo y recuperación</a></li>
+  <li><a href="#conclusión">Conclusión</a></li>
+</ol>
+
+<hr />
+
+<h2 id="introducción">Introducción</h2>
+
+<p>En el desarrollo de software moderno, la <strong>seguridad</strong>, la <strong>trazabilidad</strong> y la <strong>confianza</strong> son fundamentales. Git registra quién hizo un commit, pero por defecto <strong>confía ciegamente</strong> en el nombre y correo configurados.</p>
+
+<p>👉 Cualquiera puede hacerse pasar por ti… <strong>a menos que firmes tus commits</strong>.</p>
+
+<p>En este artículo aprenderás:</p>
+
+<ul>
+  <li>Qué son las llaves GPG y cómo funcionan en Git</li>
+  <li>Por qué deberías firmar tus commits</li>
+  <li>Cómo configurarlas correctamente</li>
+  <li>Cómo manejar <strong>múltiples identidades GPG automáticamente</strong></li>
+  <li>Buenas prácticas reales para entornos profesionales</li>
+</ul>
+
+<hr />
+
+<h2 id="qué-es-gpg-y-para-qué-se-usa-en-git">¿Qué es GPG y para qué se usa en Git?</h2>
+
+<p><strong>GPG (GNU Privacy Guard)</strong> es una implementación libre del estándar <strong>OpenPGP</strong> que permite:</p>
+
+<ul>
+  <li>🔐 Cifrar información</li>
+  <li>✍️ Firmar datos</li>
+  <li>🪪 Verificar identidades</li>
+</ul>
+
+<p>En Git, GPG se utiliza principalmente para:</p>
+
+<ul>
+  <li><strong>Firmar commits</strong> → demostrar autoría</li>
+  <li><strong>Firmar tags</strong> → garantizar autenticidad de releases</li>
+  <li><strong>Auditoría</strong> → trazabilidad confiable del código</li>
+</ul>
+
+<p>GPG usa criptografía de clave pública:</p>
+
+<ul>
+  <li><strong>Llave privada</strong> → solo tú la tienes (firma)</li>
+  <li><strong>Llave pública</strong> → la compartes (verificación)</li>
+</ul>
+
+<hr />
+
+<h2 id="por-qué-firmar-tus-commits">¿Por qué firmar tus commits?</h2>
+
+<h3 id="1-verificación-de-identidad">1. Verificación de identidad</h3>
+
+<p>Esto es perfectamente válido en Git:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config user.name <span class="s2">"John Doe"</span>
+git config user.email <span class="s2">"john.doe@email.com"</span>
+</code></pre></div></div>
+
+<p>Sin GPG, <strong>no hay garantía</strong> de que el commit sea realmente tuyo.</p>
+
+<hr />
+
+<h3 id="2-integridad-del-código">2. Integridad del código</h3>
+
+<p>Si un commit firmado se modifica, la firma <strong>se invalida automáticamente</strong>.</p>
+
+<hr />
+
+<h3 id="3-confianza-en-equipos-y-open-source">3. Confianza en equipos y open source</h3>
+
+<p>Permite a mantenedores verificar que las contribuciones provienen de fuentes legítimas.</p>
+
+<hr />
+
+<h3 id="4-compliance-y-auditoría">4. Compliance y auditoría</h3>
+
+<p>Muchas empresas requieren:</p>
+
+<ul>
+  <li>Commits firmados</li>
+  <li>Historial verificable</li>
+  <li>Identidades separadas por contexto</li>
+</ul>
+
+<hr />
+
+<h3 id="5-badge-verified-en-github">5. Badge “Verified” en GitHub</h3>
+
+<p>GitHub muestra un badge verde <strong>Verified</strong> cuando:</p>
+
+<ul>
+  <li>El commit está firmado</li>
+  <li>La llave pública está en tu cuenta</li>
+  <li>El email coincide</li>
+</ul>
+
+<hr />
+
+<h3 id="6-protección-de-reputación">6. Protección de reputación</h3>
+
+<p>Evita suplantación de identidad en tu nombre o proyectos.</p>
+
+<hr />
+
+<h2 id="instalación-de-gpg">Instalación de GPG</h2>
+
+<h3 id="linux-debian--ubuntu">Linux (Debian / Ubuntu)</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt update
+<span class="nb">sudo </span>apt <span class="nb">install </span>gnupg
+</code></pre></div></div>
+
+<h3 id="macos">macOS</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>gnupg
+</code></pre></div></div>
+
+<blockquote>
+  <p>💡 En macOS asegúrate de tener <code class="language-plaintext highlighter-rouge">pinentry-mac</code> instalado para el prompt de contraseña.</p>
+</blockquote>
+
+<h3 id="windows">Windows</h3>
+
+<p>Instala <strong>Gpg4win</strong> desde su sitio oficial.</p>
+
+<p>Verifica la instalación:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--version</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="configuración-básica">Configuración básica</h2>
+
+<h3 id="1-generar-una-llave-gpg">1. Generar una llave GPG</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--full-generate-key</span>
+</code></pre></div></div>
+
+<p>Recomendaciones:</p>
+
+<ul>
+  <li><strong>Tipo</strong>: RSA and RSA</li>
+  <li><strong>Tamaño</strong>: 4096 bits</li>
+  <li><strong>Expiración</strong>: ✅ <em>Recomendado</em> (ej: 1–2 años)</li>
+</ul>
+
+<blockquote>
+  <p>🔐 Aunque GPG permite llaves sin expiración, <strong>expirar y rotar llaves es una mejor práctica de seguridad</strong>.</p>
+</blockquote>
+
+<hr />
+
+<h3 id="2-listar-llaves">2. Listar llaves</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--list-secret-keys</span> <span class="nt">--keyid-format</span><span class="o">=</span>long
+</code></pre></div></div>
+
+<p>Ejemplo:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sec   rsa4096/ABCD1234EFGH5678 2024-01-15
+uid   John Doe &lt;john.doe@personal.com&gt;
+</code></pre></div></div>
+
+<p>El <strong>Key ID</strong> es lo que usará Git.</p>
+
+<hr />
+
+<h3 id="3-exportar-llave-pública">3. Exportar llave pública</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--armor</span> <span class="nt">--export</span> ABCD1234EFGH5678
+</code></pre></div></div>
+
+<p>Copia el bloque completo.</p>
+
+<hr />
+
+<h3 id="4-agregar-llave-a-github">4. Agregar llave a GitHub</h3>
+
+<ul>
+  <li>GitHub → Settings → SSH and GPG Keys</li>
+  <li>New GPG Key</li>
+  <li>Pega la llave pública</li>
+</ul>
+
+<hr />
+
+<h3 id="5-configurar-git">5. Configurar Git</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config <span class="nt">--global</span> user.signingkey ABCD1234EFGH5678
+git config <span class="nt">--global</span> commit.gpgsign <span class="nb">true
+</span>git config <span class="nt">--global</span> tag.gpgsign <span class="nb">true</span>
+</code></pre></div></div>
+
+<p>Opcional pero recomendado:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config <span class="nt">--global</span> gpg.program gpg
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="firmar-commits-y-tags">Firmar commits y tags</h2>
+
+<p>Commit firmado manualmente:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git commit <span class="nt">-S</span> <span class="nt">-m</span> <span class="s2">"Signed commit"</span>
+</code></pre></div></div>
+
+<p>Tag firmado:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git tag <span class="nt">-s</span> v1.0.0 <span class="nt">-m</span> <span class="s2">"Release v1.0.0"</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="múltiples-llaves-gpg-por-contexto-trabajo--personal">Múltiples llaves GPG por contexto (trabajo / personal)</h2>
+
+<h3 id="estructura-recomendada">Estructura recomendada</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/projects/
+├── work/
+└── personal/
+</code></pre></div></div>
+
+<hr />
+
+<h3 id="configuración-condicional-includeif">Configuración condicional (<code class="language-plaintext highlighter-rouge">includeIf</code>)</h3>
+
+<p><code class="language-plaintext highlighter-rouge">~/.gitconfig</code></p>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[user]</span><span class="w">
+    </span><span class="py">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">John Doe</span>
+<span class="w">    </span><span class="py">email</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">john.doe@email.com</span>
+<span class="w">
+</span><span class="nn">[includeIf "gitdir:~/projects/personal/"]</span><span class="w">
+    </span><span class="py">path</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">~/.gitconfig-personal</span>
+<span class="w">
+</span><span class="nn">[includeIf "gitdir:~/projects/work/"]</span><span class="w">
+    </span><span class="py">path</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">~/.gitconfig-work</span>
+</code></pre></div></div>
+
+<hr />
+
+<h3 id="configuración-personal">Configuración personal</h3>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[user]</span><span class="w">
+    </span><span class="py">email</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">john.doe@personal.com</span>
+<span class="w">    </span><span class="py">signingkey</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">ABCD1234EFGH5678</span>
+<span class="w">
+</span><span class="nn">[commit]</span><span class="w">
+    </span><span class="py">gpgsign</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">true</span>
+</code></pre></div></div>
+
+<h3 id="configuración-trabajo">Configuración trabajo</h3>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[user]</span><span class="w">
+    </span><span class="py">email</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">john.doe@company.com</span>
+<span class="w">    </span><span class="py">signingkey</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">WORK5678ABCD1234</span>
+<span class="w">
+</span><span class="nn">[commit]</span><span class="w">
+    </span><span class="py">gpgsign</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">true</span>
+</code></pre></div></div>
+
+<p>✔ Automático, seguro y sin errores humanos.</p>
+
+<hr />
+
+<h2 id="verificación-de-firmas">Verificación de firmas</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git log <span class="nt">--show-signature</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git verify-commit &lt;<span class="nb">hash</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p>En GitHub:</p>
+
+<ul>
+  <li>✅ Verified</li>
+  <li>⚠️ Unverified</li>
+  <li>❌ Invalid</li>
+</ul>
+
+<hr />
+
+<h2 id="solución-de-problemas-comunes">Solución de problemas comunes</h2>
+
+<h3 id="error-inappropriate-ioctl-for-device">Error: <code class="language-plaintext highlighter-rouge">Inappropriate ioctl for device</code></h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">GPG_TTY</span><span class="o">=</span><span class="si">$(</span><span class="nb">tty</span><span class="si">)</span>
+</code></pre></div></div>
+
+<hr />
+
+<h3 id="gpg-pide-contraseña-en-cada-commit">GPG pide contraseña en cada commit</h3>
+
+<p><code class="language-plaintext highlighter-rouge">~/.gnupg/gpg-agent.conf</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>default-cache-ttl 86400
+max-cache-ttl 604800
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpgconf <span class="nt">--kill</span> gpg-agent
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="buenas-prácticas-de-seguridad">Buenas prácticas de seguridad</h2>
+
+<ul>
+  <li>🔐 Usa llaves de 4096 bits</li>
+  <li>🔄 Establece expiración y rota llaves</li>
+  <li>🧩 Una llave por contexto</li>
+  <li>💾 Respaldos cifrados</li>
+  <li>🚫 Revoca llaves comprometidas</li>
+  <li>📝 Documenta tus llaves</li>
+</ul>
+
+<hr />
+
+<h2 id="respaldo-y-recuperación">Respaldo y recuperación</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--export-secret-keys</span> <span class="nt">--armor</span> KEY_ID <span class="o">&gt;</span> private.asc
+gpg <span class="nt">--gen-revoke</span> KEY_ID <span class="o">&gt;</span> revoke.asc
+</code></pre></div></div>
+
+<p>⚠️ Guarda estos archivos <strong>offline y cifrados</strong>.</p>
+
+<hr />
+
+<h2 id="conclusión">Conclusión</h2>
+
+<p>Firmar tus commits con GPG no es una moda, es una <strong>práctica profesional</strong>.</p>
+
+<p>Con esta configuración obtienes:</p>
+
+<ul>
+  <li>✔ Autoría verificable</li>
+  <li>✔ Protección de identidad</li>
+  <li>✔ Confianza en equipos</li>
+  <li>✔ Historial auditable</li>
+  <li>✔ Profesionalismo real</li>
+</ul>
+
+<p>Si trabajas en múltiples contextos, la configuración por directorios es <strong>la mejor solución posible</strong>.</p>
+
+  </div><a class="u-url" href="/gpg/linux/config/git/2025/12/15/secure-commits-with-gpg-keys.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Leonel Hernández</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/leonelbl"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">leonelbl</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Notas y herramientas útiles para el día a día</p>
+      </div>
+    </div>
+  </div>
+</footer></body>
+</html>
