@@ -28,6 +28,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  padding-top: 60px;
 }
 
 a {
@@ -202,6 +203,16 @@ h4 { font-size: 1.25rem; }
 .stagger-4 { animation-delay: 0.4s; }
 .stagger-5 { animation-delay: 0.5s; }
 
+@media (max-width: 900px) {
+  body {
+    padding-top: 0;
+  }
+
+  .page-content {
+    padding: 1.5rem 0;
+  }
+}
+
 @media (max-width: 600px) {
   .home .home-intro h1 {
     font-size: 1.8rem;
@@ -209,9 +220,5 @@ h4 { font-size: 1.25rem; }
   
   .home .home-intro p {
     font-size: 1rem;
-  }
-  
-  .page-content {
-    padding: 1.5rem 0;
   }
 }

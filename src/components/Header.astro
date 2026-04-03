@@ -198,24 +198,39 @@ const t = (await import(`../i18n/${lang}.json`)).default;
   }
 
   @media (max-width: 900px) {
+    .site-header {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .header-container {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+
     .menu-toggle {
       display: flex;
+      z-index: 1001;
     }
 
     .nav-menu {
       position: fixed;
-      top: 57px;
+      top: 0;
       left: 0;
       right: 0;
       bottom: 0;
       background: var(--surface);
       flex-direction: column;
       align-items: flex-start;
-      padding: 2rem 1.5rem;
-      gap: 2rem;
+      padding: 5rem 1.5rem 2rem;
+      gap: 0;
       transform: translateX(100%);
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       overflow-y: auto;
+      z-index: 1000;
     }
 
     .nav-menu.open {
@@ -242,9 +257,11 @@ const t = (await import(`../i18n/${lang}.json`)).default;
     .nav-actions {
       padding-left: 0;
       padding-top: 1rem;
+      padding-bottom: 2rem;
       border-left: none;
       border-top: 1px solid var(--border);
       width: 100%;
+      margin-top: auto;
     }
   }
 
