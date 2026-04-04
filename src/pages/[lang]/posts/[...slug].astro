@@ -5,7 +5,7 @@ import { getCollection, render } from 'astro:content';
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
   return posts.map((post) => {
-    const slug = post.id.replace(/\.(en|es)\./, '.').replace(/\.(md|mdx)$/, '');
+    const slug = (post.data.translation_key || post.slug).replace(/-es$/, '');
     return {
       params: { lang: post.data.lang, slug },
       props: { post },
@@ -15,8 +15,9 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
-const slug = post.id.replace(/\.(en|es)\./, '.').replace(/\.(md|mdx)$/, '');
+const slug = (post.data.translation_key || post.slug).replace(/-es$/, '');
 const rawContent = post.body || '';
+const translationKey = post.data.translation_key;
 ---
 
 <BlogLayout
@@ -28,6 +29,7 @@ const rawContent = post.body || '';
   headings={headings}
   rawContent={rawContent}
   slug={slug}
+  translationKey={translationKey}
 >
   <Content />
 </BlogLayout>

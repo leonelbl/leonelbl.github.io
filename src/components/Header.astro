@@ -3,6 +3,11 @@ import LanguageSelector from './LanguageSelector.astro';
 import { getLangFromUrl } from '../lib/i18n';
 import { getLocalizedPath } from '../lib/utils';
 
+interface Props {
+  translationKey?: string;
+}
+
+const { translationKey } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = (await import(`../i18n/${lang}.json`)).default;
 ---
@@ -45,7 +50,7 @@ const t = (await import(`../i18n/${lang}.json`)).default;
               <circle cx="5" cy="19" r="1"></circle>
             </svg>
           </a>
-          <LanguageSelector />
+          <LanguageSelector translationKey={translationKey} />
         </div>
       </div>
     </nav>

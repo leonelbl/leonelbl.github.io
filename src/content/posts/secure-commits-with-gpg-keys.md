@@ -4,6 +4,7 @@ date: 2025-12-15
 categories: ["gpg", "linux", "config", "git"]
 tags: ["gpg", "config", "linux", "git"]
 lang: en
+translation_key: secure-commits-with-gpg-keys
 description: "Learn how to sign your Git commits with GPG keys to prove authorship and protect your reputation."
 ---
 

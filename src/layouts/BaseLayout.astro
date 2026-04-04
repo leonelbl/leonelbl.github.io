@@ -6,9 +6,10 @@ import Footer from '../components/Footer.astro';
 interface Props {
   title?: string;
   description?: string;
+  translationKey?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description, translationKey } = Astro.props;
 ---
 
 <!doctype html>
@@ -17,7 +18,7 @@ const { title, description } = Astro.props;
     <SEOHead title={title} description={description} />
   </head>
   <body>
-    <Header />
+    <Header translationKey={translationKey} />
     <main class="page-content">
       <div class="wrapper animate-fade-in">
         <slot />

@@ -1,5 +1,6 @@
 ---
 title: "Complete Distrobox Configuration Guide"
+translation_key: distrobox-config
 date: 2025-11-28
 categories: ["linux", "config", "distrobox"]
 tags: ["config", "linux", "distrobox", "containers", "podman", "docker"]

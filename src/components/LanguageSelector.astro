@@ -1,9 +1,32 @@
 ---
 import { getLangFromUrl, supportedLangs } from '../lib/i18n';
-import { getLocalizedPath, removeLangFromPath } from '../lib/utils';
+import { getLocalizedPath } from '../lib/utils';
+import { getCollection } from 'astro:content';
 
+interface Props {
+  translationKey?: string;
+}
+
+const { translationKey } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
-const currentPath = removeLangFromPath(Astro.url.pathname);
+const currentPath = Astro.url.pathname;
+
+let translatedSlug = '';
+let translatedUrl = '/';
+
+if (translationKey) {
+  const posts = await getCollection('posts');
+  const translatedPost = posts.find(p => 
+    p.data.translation_key === translationKey && p.data.lang !== lang
+  );
+  if (translatedPost) {
+    translatedSlug = (translatedPost.data.translation_key || translatedPost.slug).replace(/-es$/, '');
+    translatedUrl = `/${lang === 'en' ? 'es' : 'en'}/posts/${translatedSlug}/`;
+  }
+} else {
+  const targetLang = lang === 'en' ? 'es' : 'en';
+  translatedUrl = getLocalizedPath(currentPath, targetLang);
+}
 ---
 
 <div class="language-selector">
@@ -13,7 +36,9 @@ const currentPath = removeLangFromPath(Astro.url.pathname);
       {l === lang ? (
         <strong>{l.toUpperCase()}</strong>
       ) : (
-        <a href={getLocalizedPath(currentPath, l)}>{l.toUpperCase()}</a>
+        <a href={l === lang ? '#' : translatedUrl}>
+          {l.toUpperCase()}
+        </a>
       )}
       {l !== supportedLangs[supportedLangs.length - 1] && ' | '}
     </span>

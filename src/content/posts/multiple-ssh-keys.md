@@ -4,6 +4,7 @@ date: 2025-12-06
 categories: ["linux", "config", "git"]
 tags: ["config", "linux", "git"]
 lang: en
+translation_key: multiple-ssh-keys
 description: "Learn how to configure and manage multiple SSH keys on your system for personal and work projects."
 ---
 

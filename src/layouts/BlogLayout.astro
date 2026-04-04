@@ -17,14 +17,15 @@ interface Props {
   headings?: { depth: number; slug: string; text: string }[];
   rawContent?: string;
   slug?: string;
+  translationKey?: string;
 }
 
-const { title, description, date, categories, tags, headings = [], rawContent = '', slug = '' } = Astro.props;
+const { title, description, date, categories, tags, headings = [], rawContent = '', slug = '', translationKey } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = (await import(`../i18n/${lang}.json`)).default;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} translationKey={translationKey}>
   <SocialMeta title={title} description={description} />
   <CodeCopyButton />
   
