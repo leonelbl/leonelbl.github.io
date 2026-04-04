@@ -13,23 +13,6 @@ description: "Aprende cómo firmar tus commits de Git con llaves GPG para demost
 
 ---
 
-## Tabla de contenidos
-
-1. [Introducción](#introducción)
-2. [¿Qué es GPG y para qué se usa en Git?](#qué-es-gpg-y-para-qué-se-usa-en-git)
-3. [¿Por qué firmar tus commits?](#por-qué-firmar-tus-commits)
-4. [Instalación de GPG](#instalación-de-gpg)
-5. [Configuración básica](#configuración-básica)
-6. [Firmar commits y tags](#firmar-commits-y-tags)
-7. [Múltiples llaves GPG por contexto (trabajo / personal)](#múltiples-llaves-gpg-por-contexto-trabajo--personal)
-8. [Verificación de firmas](#verificación-de-firmas)
-9. [Solución de problemas comunes](#solución-de-problemas-comunes)
-10. [Buenas prácticas de seguridad](#buenas-prácticas-de-seguridad)
-11. [Respaldo y recuperación](#respaldo-y-recuperación)
-12. [Conclusión](#conclusión)
-
----
-
 ## Introducción
 
 En el desarrollo de software moderno, la **seguridad**, la **trazabilidad** y la **confianza** son fundamentales. Git registra quién hizo un commit, pero por defecto **confía ciegamente** en el nombre y correo configurados.

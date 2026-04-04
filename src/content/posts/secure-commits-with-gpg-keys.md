@@ -13,23 +13,6 @@ description: "Learn how to sign your Git commits with GPG keys to prove authorsh
 
 ---
 
-## Table of Contents
-
-1. [Introduction](#introduction)
-2. [What is GPG and how is it used with Git?](#what-is-gpg-and-how-is-it-used-with-git)
-3. [Why should you sign your commits?](#why-should-you-sign-your-commits)
-4. [Installing GPG](#installing-gpg)
-5. [Basic configuration](#basic-configuration)
-6. [Signing commits and tags](#signing-commits-and-tags)
-7. [Multiple GPG keys by context (work / personal)](#multiple-gpg-keys-by-context-work--personal)
-8. [Verifying signatures](#verifying-signatures)
-9. [Common troubleshooting](#common-troubleshooting)
-10. [Security best practices](#security-best-practices)
-11. [Backup and recovery](#backup-and-recovery)
-12. [Conclusion](#conclusion)
-
----
-
 ## Introduction
 
 In modern software development, **security**, **traceability**, and **trust** are essential. Git records who created a commit, but by default it **blindly trusts** the configured name and email.
