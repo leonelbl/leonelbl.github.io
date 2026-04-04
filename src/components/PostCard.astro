@@ -22,7 +22,7 @@ interface Props {
 const { post, index = 0 } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = (await import(`../i18n/${lang}.json`)).default;
-const slug = post.id.replace(/\.(en|es)\./, '.').replace(/\.(md|mdx)$/, '');
+const slug = post.id.replace(/\.(en|es)\./, '').replace(/\.(md|mdx)$/, '').replace('-es', '');;
 const postUrl = getLocalizedPath(`/posts/${slug}`, post.data.lang);
 ---
 
