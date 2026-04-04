@@ -1,5 +1,77 @@
 ---
-import { defaultLang } from '../lib/i18n';
-
-return Astro.redirect(`/${defaultLang}`);
+const defaultLang = 'en';
 ---
+
+<!doctype html>
+<html lang={defaultLang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leonel BL</title>
+    <link rel="canonical" href="https://leonelbl.github.io/en" />
+    <link rel="stylesheet" href="/styles/main.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--background);
+        color: var(--text-primary);
+      }
+
+      .loader-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .loader {
+        width: 40px;
+        height: 40px;
+        border: 3px solid transparent;
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      .loader-dot {
+        width: 8px;
+        height: 8px;
+        background-color: var(--accent);
+        border-radius: 50%;
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+
+      .redirect-text {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 0.3; transform: scale(0.8); }
+        50% { opacity: 1; transform: scale(1); }
+      }
+    </style>
+    <script define:vars={{ defaultLang }}>
+      setTimeout(() => {
+        const target = '/' + defaultLang + location.search + location.hash;
+        location.replace(target);
+      }, 200);
+    </script>
+  </head>
+  <body>
+    <div class="loader-container">
+      <div class="loader"></div>
+      <div class="loader-dot"></div>
+      <p class="redirect-text">Loading...</p>
+    </div>
+  </body>
+</html>
