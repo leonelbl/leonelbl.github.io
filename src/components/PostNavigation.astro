@@ -32,9 +32,8 @@ const prevPost = currentIndex < posts.length - 1 ? posts[currentIndex + 1] : nul
 const nextPost = currentIndex > 0 ? posts[currentIndex - 1] : null;
 
 const getSlug = (post: typeof posts[0]) => {
-  return post.id.replace(/\.(en|es)\./, '.').replace(/\.(md|mdx)$/, '');
+  return post.id.replace(/\.(en|es)\./, '').replace(/\.(md|mdx)$/, '');
 };
-
 const hasNavigation = prevPost || nextPost;
 ---
 
