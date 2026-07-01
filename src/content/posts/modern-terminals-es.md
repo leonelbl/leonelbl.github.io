@@ -180,18 +180,18 @@ Así se ve una sesión típica:
 
 ## ⚔️ Cara a cara
 
-| Característica | Ghostty (cmux) | Wave Terminal | Limux | WezTerm |
-| :--- | :--- | :--- | :--- | :--- |
-| **Plataforma** | Solo macOS | macOS, Linux, Windows | Solo Linux | macOS, Linux, Windows, BSD |
-| **Lenguaje** | Swift + AppKit | Go + TypeScript | Rust + GTK4 | Rust |
-| **Aceleración GPU** | ✅ (libghostty) | ❌ (xterm.js) | ✅ (libghostty) | ✅ (wgpu) |
-| **Integración IA** | ✉️ Notificaciones de agente | ✅ Asistente integrado | ✉️ Notificaciones de agente | ❌ (Configurable por usuario) |
-| **Navegador integrado**| ✅ Programable | ✅ Widget web | ✅ WebKitGTK | ❌ No tiene |
-| **SSH** | ✅ Espacios nativos | ✅ Reconexión automática | 🐚 Vía terminal | ✅ Nativo + multiplexación |
-| **Paneles divididos** | ✅ Soportado | ✅ Basado en mosaicos | ✅ Soportado | ✅ Multiplexor integrado |
-| **Open Source** | ✅ GPL-3.0 | ✅ Apache 2.0 | ✅ GPL-3.0 | ✅ MIT |
-| **Restaurar sesión** | ✅ Completa | ✅ Durable | ✅ Por espacio | ✅ Vía Zellij / Nativo |
-| **Programable** | CLI + Socket API | Sistema `wsh` | CLI + Socket API | Scripting en Lua |
+| Característica | Wave Terminal | Limux | WezTerm |
+| :--- | :--- | :--- | :--- |
+| **Plataforma** | macOS, Linux, Windows | Solo Linux | macOS, Linux, Windows, BSD |
+| **Lenguaje** | Go + TypeScript | Rust + GTK4 | Rust |
+| **Aceleración GPU** | ❌ (xterm.js) | ✅ (libghostty) | ✅ (wgpu) |
+| **Integración IA** | ✅ Asistente integrado | ✉️ Notificaciones de agente | ❌ (Configurable por usuario) |
+| **Navegador integrado**| ✅ Widget web | ✅ WebKitGTK | ❌ No tiene |
+| **SSH** | ✅ Reconexión automática | 🐚 Vía terminal | ✅ Nativo + multiplexación |
+| **Paneles divididos** | ✅ Basado en mosaicos | ✅ Soportado | ✅ Multiplexor integrado |
+| **Open Source** | ✅ Apache 2.0 | ✅ GPL-3.0 | ✅ MIT |
+| **Restaurar sesión** | ✅ Durable | ✅ Por espacio | ✅ Vía Zellij / Nativo |
+| **Programable** | Sistema `wsh` | CLI + Socket API | Scripting en Lua |
 
 ---
 

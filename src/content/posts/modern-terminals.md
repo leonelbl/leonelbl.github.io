@@ -180,18 +180,18 @@ The beauty? Each tool is best-in-class at one thing, and together they're unstop
 
 ## ⚔️ Head-to-Head
 
-| Feature | Ghostty (cmux) | Wave Terminal | Limux | WezTerm |
-| :--- | :--- | :--- | :--- | :--- |
-| **Platform** | macOS only | macOS, Linux, Windows | Linux only | macOS, Linux, Windows, BSD |
-| **Language** | Swift + AppKit | Go + TypeScript | Rust + GTK4 | Rust |
-| **GPU Acceleration** | ✅ (libghostty) | ❌ (xterm.js) | ✅ (libghostty) | ✅ (wgpu) |
-| **AI Integration** | ✉️ Agent notifications | ✅ Built-in AI assistant | ✉️ Agent notifications | ❌ (User-configured) |
-| **Built-in Browser** | ✅ Programmable | ✅ Web widget | ✅ WebKitGTK | ❌ None |
-| **SSH** | ✅ Native spaces | ✅ Auto-reconnect | 🐚 Via terminal | ✅ Native + multiplexing |
-| **Split Panes** | ✅ Supported | ✅ Tile-based | ✅ Supported | ✅ Built-in multiplexer |
-| **Open Source** | ✅ GPL-3.0 | ✅ Apache 2.0 | ✅ GPL-3.0 | ✅ MIT |
-| **Session Restore** | ✅ Full | ✅ Durable | ✅ Per space | ✅ Via Zellij / Native |
-| **Programmable** | CLI + Socket API | `wsh` system | CLI + Socket API | Lua scripting |
+| Feature | Wave Terminal | Limux | WezTerm |
+| :--- | :--- | :--- | :--- |
+| **Platform** | macOS, Linux, Windows | Linux only | macOS, Linux, Windows, BSD |
+| **Language** | Go + TypeScript | Rust + GTK4 | Rust |
+| **GPU Acceleration** | ❌ (xterm.js) | ✅ (libghostty) | ✅ (wgpu) |
+| **AI Integration** | ✅ Built-in AI assistant | ✉️ Agent notifications | ❌ (User-configured) |
+| **Built-in Browser** | ✅ Web widget | ✅ WebKitGTK | ❌ None |
+| **SSH** | ✅ Auto-reconnect | 🐚 Via terminal | ✅ Native + multiplexing |
+| **Split Panes** | ✅ Tile-based | ✅ Supported | ✅ Built-in multiplexer |
+| **Open Source** | ✅ Apache 2.0 | ✅ GPL-3.0 | ✅ MIT |
+| **Session Restore** | ✅ Durable | ✅ Per space | ✅ Via Zellij / Native |
+| **Programmable** | `wsh` system | CLI + Socket API | Lua scripting |
 
 ---
 
