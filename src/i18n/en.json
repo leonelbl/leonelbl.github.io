@@ -1,7 +1,7 @@
 {
   "global": {
     "title": "{>_-} Leonel",
-    "description": "Useful notes and tools for everyday use"
+    "description": "Useful notes, tools, and guides for developers"
   },
   "navigation": {
     "home": "Home",
@@ -12,7 +12,8 @@
     "read_more": "Read more",
     "published": "Published on",
     "categories": "Categories",
-    "tags": "Tags"
+    "tags": "Tags",
+    "table_of_contents": "Table of Contents"
   },
   "home": {
     "welcome": "Welcome to my blog",

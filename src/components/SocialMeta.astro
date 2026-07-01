@@ -1,4 +1,6 @@
 ---
+import { getLangFromUrl } from '../lib/i18n';
+
 interface Props {
   title: string;
   description?: string;
@@ -7,9 +9,12 @@ interface Props {
 }
 
 const { title, description, image, url } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = (await import(`../i18n/${lang}.json`)).default;
 const siteUrl = 'https://leonelbl.github.io';
-const defaultImage = `${siteUrl}/og-default.png`;
+const defaultImage = `${siteUrl}/og-default.svg`;
 const canonicalUrl = url || new URL(Astro.url.pathname, siteUrl).href;
+const siteName = `${t.global.title} | Senior FullStack Developer`;
 ---
 
 <meta property="og:title" content={title} />
@@ -17,7 +22,8 @@ const canonicalUrl = url || new URL(Astro.url.pathname, siteUrl).href;
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:type" content="website" />
 <meta property="og:image" content={image || defaultImage} />
-<meta property="og:site_name" content="My Tools Blog" />
+<meta property="og:image:type" content={image ? 'image/png' : 'image/svg+xml'} />
+<meta property="og:site_name" content={siteName} />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />

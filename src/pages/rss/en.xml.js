@@ -1,6 +1,7 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { defaultLang } from '../../lib/i18n';
+import en from '../../i18n/en.json';
 
 export async function GET(context) {
   const posts = await getCollection('posts');
@@ -9,8 +10,8 @@ export async function GET(context) {
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
   return rss({
-    title: 'My Tools Blog',
-    description: 'Useful notes and tools for everyday use',
+    title: `${en.global.title} | Senior FullStack Developer`,
+    description: 'Useful notes, tools, and guides for developers',
     site: context.site,
     items: sortedPosts.map((post) => ({
       title: post.data.title,
