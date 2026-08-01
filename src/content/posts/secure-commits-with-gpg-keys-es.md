@@ -337,6 +337,56 @@ Guarda estos archivos **offline y cifrados**.
 
 ---
 
+## Importar una llave GPG existente (nueva máquina / respaldo)
+
+Si ya tienes una llave respaldada y quieres usarla en otra máquina, **no necesitas generar una nueva**: puedes importarla y configurar Git para usarla.
+
+### 1. Copiar la llave al nuevo equipo
+
+Transfiere tu respaldo (`private.asc`) a la nueva máquina por un medio seguro (USB cifrado, gestor de contraseñas, etc.) y elimínalo después de importarlo.
+
+### 2. Importar la llave secreta
+
+```bash
+gpg --import private.asc
+```
+
+Verifica que se importó correctamente:
+
+```bash
+gpg --list-secret-keys --keyid-format=long
+```
+
+> Si la llave es tuya, márcala como **confiable** para que GPG y Git no muestren advertencias de firma "no verificada":
+>
+> ```bash
+> gpg --edit-key ABCD1234EFGH5678
+> # Dentro del prompt: trust → 5 (I trust ultimately) → y → quit
+> ```
+
+### 3. Configurar Git para usar la llave importada
+
+```bash
+git config --global user.signingkey ABCD1234EFGH5678
+git config --global commit.gpgsign true
+git config --global tag.gpgsign true
+```
+
+La opción `commit.gpgsign true` hace que **todos tus commits queden firmados automáticamente**, sin necesidad de pasar `-S` en cada commit. Con `tag.gpgsign true` ocurre lo mismo con los tags.
+
+### 4. Verificar la configuración
+
+```bash
+git config --global --list | grep -E "gpg|signing"
+```
+
+```bash
+git commit -m "Comprobando firma automática"
+git log --show-signature
+```
+
+---
+
 ## Conclusión
 
 Firmar tus commits con GPG no es una moda, es una **práctica profesional**.

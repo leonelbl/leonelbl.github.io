@@ -337,6 +337,56 @@ Store these files **offline and encrypted**.
 
 ---
 
+## Importing an existing GPG key (new machine / backup)
+
+If you already have a backed-up key and want to use it on another machine, you **don't need to generate a new one**: you can import it and configure Git to use it.
+
+### 1. Copy the key to the new machine
+
+Transfer your backup (`private.asc`) to the new machine through a secure medium (encrypted USB drive, password manager, etc.) and delete it after importing.
+
+### 2. Import the secret key
+
+```bash
+gpg --import private.asc
+```
+
+Verify it was imported correctly:
+
+```bash
+gpg --list-secret-keys --keyid-format=long
+```
+
+> If the key is yours, mark it as **trusted** so GPG and Git don't show "unverified" signature warnings:
+>
+> ```bash
+> gpg --edit-key ABCD1234EFGH5678
+> # Inside the prompt: trust → 5 (I trust ultimately) → y → quit
+> ```
+
+### 3. Configure Git to use the imported key
+
+```bash
+git config --global user.signingkey ABCD1234EFGH5678
+git config --global commit.gpgsign true
+git config --global tag.gpgsign true
+```
+
+The `commit.gpgsign true` option makes **all your commits signed automatically**, without having to pass `-S` on every commit. The same applies to tags with `tag.gpgsign true`.
+
+### 4. Verify the configuration
+
+```bash
+git config --global --list | grep -E "gpg|signing"
+```
+
+```bash
+git commit -m "Testing automatic signing"
+git log --show-signature
+```
+
+---
+
 ## Conclusion
 
 Signing your commits with GPG is not a trend — it's a **professional standard**.
